@@ -318,7 +318,7 @@ void AppBase::RenderDepthOnly() {
                                      1.0f, 0);
 
 	AppBase::SetPipelineState(Graphics::depthOnlyPSO);
-    m_billboard->Render(m_context, true);
+    m_billboard->Render(m_context);
 
     AppBase::SetGlobalConsts(m_globalConstsGPU);
     for (const auto &model : m_basicList) {
@@ -427,6 +427,9 @@ void AppBase::RenderOpaqueObjects() {
             model->RenderWireBoundingSphere(m_context);
         }
     }
+
+	AppBase::SetPipelineState(Graphics::billboardPSO);
+	m_billboard->Render(m_context);
 }
 
 void AppBase::RenderMirror() {
@@ -496,7 +499,9 @@ void AppBase::Render() {
 
     RenderMirror();
 
-    CreateCoordinateView();
+    RenderCoordinateView();
+
+	PostRender();
 }
 
 void AppBase::OnMouseMove(int mouseX, int mouseY) {
@@ -959,10 +964,10 @@ void AppBase::ProcessMouseControl() {
     }
 }
 
-void AppBase::CreateCoordinateView() {
+void AppBase::RenderCoordinateView() {
     if (m_coordinateCheck) {
         AppBase::SetPipelineState(Graphics::coordinatePSO);
-        m_context->Draw(6, 0);
+        m_context->Draw(1, 0);
     }
 }
 

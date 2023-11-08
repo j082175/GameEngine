@@ -103,6 +103,7 @@ GraphicsPSO grassSolidPSO;
 GraphicsPSO grassWirePSO;
 GraphicsPSO oceanPSO;
 GraphicsPSO coordinatePSO;
+GraphicsPSO billboardPSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -627,6 +628,14 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     coordinatePSO.m_geometryShader = coordinateGS;
     coordinatePSO.m_pixelShader = coordinatePS;
     coordinatePSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+	// billboardPSO
+    billboardPSO = defaultSolidPSO;
+    billboardPSO.m_vertexShader = billboardVS;
+    billboardPSO.m_geometryShader = billboardGS;
+    billboardPSO.m_pixelShader = billboardPS;
+    billboardPSO.m_inputLayout = billboardIL;
+    billboardPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

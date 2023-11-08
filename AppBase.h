@@ -78,7 +78,7 @@ class AppBase {
 
     shared_ptr<Model> PickClosest(const Ray &pickingRay, float &minDist);
     void ProcessMouseControl();
-    void CreateCoordinateView();
+    void RenderCoordinateView();
 
   public:
     // 변수 이름 붙이는 규칙은 VS DX11/12 기본 템플릿을 따릅니다.

@@ -264,9 +264,8 @@ void ExampleApp::Update(float dt) {
 
 void ExampleApp::Render() {
     AppBase::Render();
-    AppBase::PostRender();
+    //AppBase::PostRender();
 
-    m_billboard->Render(m_context, false);
 
     AppBase::SetPipelineState(m_pso);
     m_context->CSSetUnorderedAccessViews(0, 1, m_uav.GetAddressOf(), NULL);

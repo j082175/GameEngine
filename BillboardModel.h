@@ -27,7 +27,7 @@ class BillboardModel : public Model {
                     const std::vector<Vector4> &points, const float width,
                     const ComPtr<ID3D11PixelShader> &pixelShader);
 
-    void Render(ComPtr<ID3D11DeviceContext> &context, bool depth);
+    void Render(ComPtr<ID3D11DeviceContext> &context);
     void RenderNormals(ComPtr<ID3D11DeviceContext> &context) override{};
     void RenderWireBoundingBox(ComPtr<ID3D11DeviceContext> &context) override{};
     void
