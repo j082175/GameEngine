@@ -43,7 +43,7 @@ bool ExampleApp::InitScene() {
     // 바닥(거울)
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
-        auto mesh = GeometryGenerator::MakeSquare(5.0, {10.0f, 10.0f});
+        auto mesh = GeometryGenerator::MakeSquare(10.0, {10.0f, 10.0f});
         string path = "../Assets/Textures/PBR/stringy-marble-ue/";
         mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
         mesh.emissiveTextureFilename = "";
@@ -63,8 +63,45 @@ bool ExampleApp::InitScene() {
         m_ground->UpdateWorldRow(Matrix::CreateRotationX(3.141592f * 0.5f) *
                                  Matrix::CreateTranslation(position));
 
-        m_mirrorPlane = SimpleMath::Plane(position, Vector3(0.0f, 1.0f, 0.0f));
-        m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
+        // m_mirrorPlane = SimpleMath::Plane(position, Vector3(0.0f, 1.0f,
+        // 0.0f)); m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
+
+        std::shared_ptr<Plane> mirrorPlane = std::make_shared<Plane>(position, Vector3(0.0f, 1.0f, 0.0f));
+        std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
+
+		m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+
+        // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    }
+
+    // 전방벽(거울)
+    {
+        // https://freepbr.com/materials/stringy-marble-pbr/
+        auto mesh = GeometryGenerator::MakeSquare(10.0, {10.0f, 10.0f});
+        string path = "../Assets/Textures/PBR/stringy-marble-ue/";
+        mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
+        mesh.emissiveTextureFilename = "";
+        mesh.aoTextureFilename = path + "stringy_marble_ao.png";
+        mesh.metallicTextureFilename = path + "stringy_marble_Metallic.png";
+        mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
+        mesh.roughnessTextureFilename = path + "stringy_marble_Roughness.png";
+
+        m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+        m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+        m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+        m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+        m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+        m_ground->m_name = "Wall";
+
+        Vector3 position = Vector3(0.0f, -0.5f, 12.0f);
+        m_ground->UpdateWorldRow(Matrix::CreateRotationX(0.1f) *
+                                 Matrix::CreateTranslation(position));
+
+        std::shared_ptr<Plane> mirrorPlane =
+            std::make_shared<Plane>(position, Vector3(0.0f, 0.0f, -1.0f));
+        std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
+
+		m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -169,29 +206,31 @@ bool ExampleApp::InitScene() {
     }
 
     // 추가 물체3
-    {
-        string path = "..\\Assets\\Characters\\armored-female-future-soldier\\";
-        vector<MeshData> meshes =
-            GeometryGenerator::ReadFromFile(path, "angel_armor.fbx");
-        meshes[0].albedoTextureFilename = path + "angel_armor_albedo.jpg";
-        meshes[0].emissiveTextureFilename = path + "angel_armor_e.jpg";
-        meshes[0].metallicTextureFilename = path + "angel_armor_metalness.jpg";
-        meshes[0].normalTextureFilename = path + "angel_armor_normal.jpg";
-        meshes[0].roughnessTextureFilename = path + "angel_armor_roughness.jpg";
+    //{
+    //    string path =
+    //    "..\\Assets\\Characters\\armored-female-future-soldier\\";
+    //    vector<MeshData> meshes =
+    //        GeometryGenerator::ReadFromFile(path, "angel_armor.fbx");
+    //    meshes[0].albedoTextureFilename = path + "angel_armor_albedo.jpg";
+    //    meshes[0].emissiveTextureFilename = path + "angel_armor_e.jpg";
+    //    meshes[0].metallicTextureFilename = path +
+    //    "angel_armor_metalness.jpg"; meshes[0].normalTextureFilename = path +
+    //    "angel_armor_normal.jpg"; meshes[0].roughnessTextureFilename = path +
+    //    "angel_armor_roughness.jpg";
 
-        Vector3 center(2.0f, 0.5f, 2.5f);
-        auto newModel = make_shared<Model>(m_device, m_context, meshes);
+    //    Vector3 center(2.0f, 0.5f, 2.5f);
+    //    auto newModel = make_shared<Model>(m_device, m_context, meshes);
 
-        newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
-        // newModel->m_materialConsts.GetCpu().albedoFactor = Vector3(0.f);
-        newModel->m_materialConsts.GetCpu().roughnessFactor = 0.5f;
-        newModel->m_materialConsts.GetCpu().metallicFactor = 0.9f;
-        newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-        newModel->UpdateConstantBuffers(m_device, m_context);
-        newModel->m_isPickable = true; // 마우스로 선택/이동 가능
-        newModel->m_name = "Soldier";
-        m_basicList.push_back(newModel);
-    }
+    //    newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
+    //    // newModel->m_materialConsts.GetCpu().albedoFactor = Vector3(0.f);
+    //    newModel->m_materialConsts.GetCpu().roughnessFactor = 0.5f;
+    //    newModel->m_materialConsts.GetCpu().metallicFactor = 0.9f;
+    //    newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    newModel->UpdateConstantBuffers(m_device, m_context);
+    //    newModel->m_isPickable = true; // 마우스로 선택/이동 가능
+    //    newModel->m_name = "Soldier";
+    //    m_basicList.push_back(newModel);
+    //}
 
     //// 추가 물체4
     {
@@ -213,7 +252,7 @@ bool ExampleApp::InitScene() {
     // Billboard
     {
         vector<Vector4> points;
-        Vector4 p = {-4.0f, 1.0f, 20.0f, 1.0f};
+        Vector4 p = {-4.0f, 1.0f, 10.0f, 1.0f};
         for (int i = 0; i < 5; i++) {
             points.push_back(p);
             p.x += 1.8f;
@@ -259,13 +298,11 @@ void ExampleApp::Update(float dt) {
 
         // iter->second->UpdateConstantBuffers(m_device, m_context);
     }
-
 }
 
 void ExampleApp::Render() {
     AppBase::Render();
-    //AppBase::PostRender();
-
+    // AppBase::PostRender();
 
     AppBase::SetPipelineState(m_pso);
     m_context->CSSetUnorderedAccessViews(0, 1, m_uav.GetAddressOf(), NULL);
@@ -364,12 +401,12 @@ void ExampleApp::UpdateGUI() {
         else
             Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
 
-        ImGui::SliderFloat("Metallic",
-                           &m_mirror->m_materialConsts.GetCpu().metallicFactor,
-                           0.0f, 1.0f);
-        ImGui::SliderFloat("Roughness",
-                           &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
-                           0.0f, 1.0f);
+        //ImGui::SliderFloat("Metallic",
+        //                   &m_mirror->m_materialConsts.GetCpu().metallicFactor,
+        //                   0.0f, 1.0f);
+        //ImGui::SliderFloat("Roughness",
+        //                   &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
+        //                   0.0f, 1.0f);
 
         ImGui::TreePop();
     }

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 
+#include "BillboardModel.h"
 #include "Camera.h"
 #include "ComputePSO.h"
 #include "ConstantBuffers.h"
@@ -15,10 +16,10 @@
 #include "Model.h"
 #include "PostProcess.h"
 #include "Timer.h"
-#include "BillboardModel.h"
 
 namespace hlab {
 
+using DirectX::SimpleMath::Plane;
 using DirectX::BoundingSphere;
 using DirectX::SimpleMath::Quaternion;
 using DirectX::SimpleMath::Ray;
@@ -46,7 +47,7 @@ class AppBase {
     virtual void RenderDepthOnly();
     virtual void RenderShadowMaps();
     virtual void RenderOpaqueObjects();
-    virtual void RenderMirror();
+    virtual void RenderMirror(const std::shared_ptr<Model> &mirror);
     virtual void Render();
 
     virtual void OnMouseMove(int mouseX, int mouseY);
@@ -184,8 +185,15 @@ class AppBase {
     shared_ptr<Model> m_lightSphere[MAX_LIGHTS];
     shared_ptr<Model> m_cursorSphere;
     shared_ptr<Model> m_mirror; // 거울은 별도로 그림
+    shared_ptr<Model> m_mirror2;
     DirectX::SimpleMath::Plane m_mirrorPlane;
+    DirectX::SimpleMath::Plane m_mirrorPlane2;
     float m_mirrorAlpha = 1.0f; // Opacity
+
+    // 거울들
+    std::map<std::shared_ptr<Model>,
+             std::shared_ptr<DirectX::SimpleMath::Plane>>
+        m_mirrorList;
 
     // 거울이 아닌 물체들의 리스트 (for문으로 그리기 위함)
     vector<shared_ptr<Model>> m_basicList;
@@ -193,9 +201,9 @@ class AppBase {
 
     int m_skyboxCheck = 0;
 
-	std::shared_ptr<Model> m_coordinate;
+    std::shared_ptr<Model> m_coordinate;
 
-	bool m_coordinateCheck = true;
+    bool m_coordinateCheck = true;
 };
 
 } // namespace hlab

@@ -635,6 +635,7 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     billboardPSO.m_geometryShader = billboardGS;
     billboardPSO.m_pixelShader = billboardPS;
     billboardPSO.m_inputLayout = billboardIL;
+    billboardPSO.m_rasterizerState = solidBothRS;
     billboardPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 }
 

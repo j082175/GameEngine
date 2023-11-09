@@ -230,8 +230,11 @@ void AppBase::Update(float dt) {
     AppBase::UpdateGlobalConstants(dt, eyeWorld, viewRow, projRow, reflectRow);
 
     // 거울은 따로 처리
-    if (m_mirror)
-        m_mirror->UpdateConstantBuffers(m_device, m_context);
+    // if (m_mirror)
+    //    m_mirror->UpdateConstantBuffers(m_device, m_context);
+    for (auto &i : m_mirrorList) {
+        i.first->UpdateConstantBuffers(m_device, m_context);
+    }
 
     // 조명의 위치 반영
     for (int i = 0; i < MAX_LIGHTS; i++)
@@ -317,7 +320,7 @@ void AppBase::RenderDepthOnly() {
     m_context->ClearDepthStencilView(m_depthOnlyDSV.Get(), D3D11_CLEAR_DEPTH,
                                      1.0f, 0);
 
-	AppBase::SetPipelineState(Graphics::depthOnlyPSO);
+    AppBase::SetPipelineState(Graphics::depthOnlyPSO);
     m_billboard->Render(m_context);
 
     AppBase::SetGlobalConsts(m_globalConstsGPU);
@@ -332,8 +335,11 @@ void AppBase::RenderDepthOnly() {
     else if (m_skybox2 && m_skyboxCheck == 1)
         m_skybox2->Render(m_context);
 
-    if (m_mirror)
-        m_mirror->Render(m_context);
+    // if (m_mirror)
+    //     m_mirror->Render(m_context);
+    for (auto &i : m_mirrorList) {
+        i.first->Render(m_context);
+    }
 }
 
 void AppBase::RenderShadowMaps() {
@@ -358,8 +364,15 @@ void AppBase::RenderShadowMaps() {
                 }
             }
 
-            if (m_mirror && m_mirror->m_castShadow)
-                m_mirror->Render(m_context);
+            // if (m_mirror && m_mirror->m_castShadow)
+            //     m_mirror->Render(m_context);
+            if (!m_mirrorList.empty()) {
+                for (auto &i : m_mirrorList) {
+                    if (i.first->m_castShadow) {
+                        i.first->Render(m_context);
+                    }
+                }
+            }
         }
     }
 }
@@ -403,10 +416,17 @@ void AppBase::RenderOpaqueObjects() {
     }
 
     // 거울 반사를 그릴 필요가 없으면 불투명 거울만 그리기
-    if (m_mirrorAlpha == 1.0f && m_mirror) {
-        AppBase::SetPipelineState(m_drawAsWire ? Graphics::defaultWirePSO
-                                               : Graphics::defaultSolidPSO);
-        m_mirror->Render(m_context);
+    // if (m_mirrorAlpha == 1.0f && m_mirror) {
+    //    AppBase::SetPipelineState(m_drawAsWire ? Graphics::defaultWirePSO
+    //                                           : Graphics::defaultSolidPSO);
+    //    m_mirror->Render(m_context);
+    //}
+    for (auto &i : m_mirrorList) {
+        if (m_mirrorAlpha == 1.f) {
+            AppBase::SetPipelineState(m_drawAsWire ? Graphics::defaultWirePSO
+                                                   : Graphics::defaultSolidPSO);
+            i.first->Render(m_context);
+        }
     }
 
     // 노멀 벡터 그리기
@@ -428,17 +448,17 @@ void AppBase::RenderOpaqueObjects() {
         }
     }
 
-	AppBase::SetPipelineState(Graphics::billboardPSO);
-	m_billboard->Render(m_context);
+    AppBase::SetPipelineState(Graphics::billboardPSO);
+    m_billboard->Render(m_context);
 }
 
-void AppBase::RenderMirror() {
+void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
 
-    if (m_mirrorAlpha < 1.0f && m_mirror) { // 거울 반사를 그려야 하는 상황
+    if (m_mirrorAlpha < 1.0f && mirror) { // 거울 반사를 그려야 하는 상황
 
         // 거울 2. 거울 위치만 StencilBuffer에 1로 표기
         AppBase::SetPipelineState(Graphics::stencilMaskPSO);
-        m_mirror->Render(m_context);
+        mirror->Render(m_context);
 
         // 거울 3. 거울 위치에 반사된 물체들을 렌더링
         AppBase::SetGlobalConsts(m_reflectGlobalConstsGPU);
@@ -459,11 +479,14 @@ void AppBase::RenderMirror() {
             m_skybox2->Render(m_context);
         }
 
+        AppBase::SetPipelineState(Graphics::billboardPSO);
+        m_billboard->Render(m_context);
+
         // 거울 4. 거울 자체의 재질을 "Blend"로 그림
         AppBase::SetPipelineState(m_drawAsWire ? Graphics::mirrorBlendWirePSO
                                                : Graphics::mirrorBlendSolidPSO);
         AppBase::SetGlobalConsts(m_globalConstsGPU);
-        m_mirror->Render(m_context);
+        mirror->Render(m_context);
 
     } // end of if (m_mirrorAlpha < 1.0f)
 }
@@ -497,11 +520,13 @@ void AppBase::Render() {
 
     RenderOpaqueObjects();
 
-    RenderMirror();
+    for (auto &i : m_mirrorList) {
+        RenderMirror(i.first);
+    }
 
     RenderCoordinateView();
 
-	PostRender();
+    PostRender();
 }
 
 void AppBase::OnMouseMove(int mouseX, int mouseY) {
