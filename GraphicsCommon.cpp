@@ -104,6 +104,7 @@ GraphicsPSO grassWirePSO;
 GraphicsPSO oceanPSO;
 GraphicsPSO coordinatePSO;
 GraphicsPSO billboardPSO;
+GraphicsPSO reflectBillboardPSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -637,6 +638,10 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     billboardPSO.m_inputLayout = billboardIL;
     billboardPSO.m_rasterizerState = solidBothRS;
     billboardPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+	reflectBillboardPSO = billboardPSO;
+    reflectBillboardPSO.m_depthStencilState = drawMaskedDSS;
+    reflectBillboardPSO.m_stencilRef = 1;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

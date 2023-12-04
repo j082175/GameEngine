@@ -220,7 +220,14 @@ void AppBase::Update(float dt) {
 
     // 반사 행렬 추가
     const Vector3 eyeWorld = m_camera.GetEyePos();
-    const Matrix reflectRow = Matrix::CreateReflection(m_mirrorPlane);
+    // std::cout << eyeWorld.x << ' ' << eyeWorld.y << ' ' << eyeWorld.z <<
+    // '\n';
+
+    Matrix reflectRow;
+    for (auto &i : m_mirrorList) {
+        reflectRow = Matrix::CreateReflection(*i.second);
+    }
+
     const Matrix viewRow = m_camera.GetViewRow();
     const Matrix projRow = m_camera.GetProjRow();
 
@@ -479,8 +486,8 @@ void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
             m_skybox2->Render(m_context);
         }
 
-        AppBase::SetPipelineState(Graphics::billboardPSO);
-        m_billboard->Render(m_context);
+         AppBase::SetPipelineState(Graphics::reflectBillboardPSO);
+         m_billboard->Render(m_context);
 
         // 거울 4. 거울 자체의 재질을 "Blend"로 그림
         AppBase::SetPipelineState(m_drawAsWire ? Graphics::mirrorBlendWirePSO

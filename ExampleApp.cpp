@@ -101,7 +101,7 @@ bool ExampleApp::InitScene() {
             std::make_shared<Plane>(position, Vector3(0.0f, 0.0f, -1.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-		m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+		//m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -235,18 +235,21 @@ bool ExampleApp::InitScene() {
     //// 추가 물체4
     {
         MeshData mesh = GeometryGenerator::MakeBox(0.3f);
+        string basePath = "..\\Assets\\Textures\\";
+        mesh.albedoTextureFilename = basePath + "blender_uv_grid_2k.png";
         Vector3 center(0.0f, 0.5f, 2.5f);
         auto newModel = make_shared<Model>(m_device, m_context, vector{mesh});
         newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
         newModel->m_materialConsts.GetCpu().albedoFactor =
-            Vector3(1.0f, 0.2f, 0.2f);
-        newModel->m_materialConsts.GetCpu().roughnessFactor = 0.5f;
-        newModel->m_materialConsts.GetCpu().metallicFactor = 0.9f;
+            Vector3(1.0f, 1.f, 1.f);
+        newModel->m_materialConsts.GetCpu().roughnessFactor = 0.f;
+        newModel->m_materialConsts.GetCpu().metallicFactor = 0.f;
         newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
         newModel->UpdateConstantBuffers(m_device, m_context);
         newModel->m_isPickable = true; // 마우스로 선택/이동 가능
         newModel->m_name = "Box";
         m_basicList.push_back(newModel);
+        m_basicListMap.insert(std::make_pair("firstBox", newModel));
     }
 
     // Billboard
@@ -298,6 +301,17 @@ void ExampleApp::Update(float dt) {
 
         // iter->second->UpdateConstantBuffers(m_device, m_context);
     }
+
+	iter = m_basicListMap.find("firstBox");
+    if (iter != m_basicListMap.end()) {
+        auto model = iter->second;
+
+		Vector3 n(0.f, 1.f, 0.f);
+        Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
+
+        //model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
+        //                      model->m_worldRow);
+	}
 }
 
 void ExampleApp::Render() {
@@ -425,7 +439,7 @@ void ExampleApp::UpdateGUI() {
                            0.5f);
         ImGui::TreePop();
     }
-
+	
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
     if (ImGui::TreeNode("Material")) {
         ImGui::SliderFloat("LodBias", &m_globalConstsCPU.lodBias, 0.0f, 10.0f);

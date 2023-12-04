@@ -254,8 +254,15 @@ PixelShaderOutput main(PixelShaderInput input)
 {
 	float3 pixelToEye = normalize(eyeWorld - input.posWorld);
 	float3 normalWorld = GetNormal(input);
+	
+	float minDist = 0.1f;
+	float maxDist = 20.f;
+	float dist = length(eyeWorld - input.posWorld);
+	
+	float lod = 8.f * saturate((dist - minDist) / (maxDist - minDist));
+	
     
-	float4 albedo = useAlbedoMap ? albedoTex.SampleLevel(linearWrapSampler, input.texcoord, lodBias) * float4(albedoFactor, 1)
+	float4 albedo = useAlbedoMap ? albedoTex.SampleLevel(linearWrapSampler, input.texcoord, lod + lodBias) * float4(albedoFactor, 1)
                                  : float4(albedoFactor, 1);
     
 	clip(albedo.a - 0.5); // Tree leaves

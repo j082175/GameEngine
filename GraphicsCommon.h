@@ -109,6 +109,7 @@ extern GraphicsPSO grassWirePSO;
 extern GraphicsPSO oceanPSO;
 extern GraphicsPSO coordinatePSO;
 extern GraphicsPSO billboardPSO;
+extern GraphicsPSO reflectBillboardPSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 extern GraphicsPSO volumeSmokePSO;
