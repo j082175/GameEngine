@@ -103,8 +103,10 @@ GraphicsPSO grassSolidPSO;
 GraphicsPSO grassWirePSO;
 GraphicsPSO oceanPSO;
 GraphicsPSO coordinatePSO;
-GraphicsPSO billboardPSO;
-GraphicsPSO reflectBillboardPSO;
+GraphicsPSO billboardSolidPSO;
+GraphicsPSO billboardWirePSO;
+GraphicsPSO reflectBillboardSolidPSO;
+GraphicsPSO reflectBillboardWirePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -489,7 +491,8 @@ void Graphics::InitShaders(ComPtr<ID3D11Device> &device) {
 
     D3D11Utils::CreateGeometryShader(device, L"NormalGS.hlsl", normalGS);
     D3D11Utils::CreateGeometryShader(device, L"BillboardGS.hlsl", billboardGS);
-    D3D11Utils::CreateGeometryShader(device, L"CoordinateGS.hlsl", coordinateGS);
+    D3D11Utils::CreateGeometryShader(device, L"CoordinateGS.hlsl",
+                                     coordinateGS);
 }
 
 void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
@@ -623,25 +626,31 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     // oceanPSO.m_rasterizerState = solidBothRS; // 양면
     oceanPSO.m_pixelShader = oceanPS;
 
-	// coordinatePSO
+    // coordinatePSO
     coordinatePSO = defaultSolidPSO;
     coordinatePSO.m_vertexShader = coordinateVS;
     coordinatePSO.m_geometryShader = coordinateGS;
     coordinatePSO.m_pixelShader = coordinatePS;
     coordinatePSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-	// billboardPSO
-    billboardPSO = defaultSolidPSO;
-    billboardPSO.m_vertexShader = billboardVS;
-    billboardPSO.m_geometryShader = billboardGS;
-    billboardPSO.m_pixelShader = billboardPS;
-    billboardPSO.m_inputLayout = billboardIL;
-    billboardPSO.m_rasterizerState = solidBothRS;
-    billboardPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+    // billboardPSO
+    billboardSolidPSO = defaultSolidPSO;
+    billboardSolidPSO.m_vertexShader = billboardVS;
+    billboardSolidPSO.m_geometryShader = billboardGS;
+    billboardSolidPSO.m_pixelShader = billboardPS;
+    billboardSolidPSO.m_inputLayout = billboardIL;
+    billboardSolidPSO.m_rasterizerState = solidBothRS;
+    billboardSolidPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-	reflectBillboardPSO = billboardPSO;
-    reflectBillboardPSO.m_depthStencilState = drawMaskedDSS;
-    reflectBillboardPSO.m_stencilRef = 1;
+    billboardWirePSO = billboardSolidPSO;
+    billboardWirePSO.m_rasterizerState = wireBothRS;
+
+    reflectBillboardSolidPSO = billboardSolidPSO;
+    reflectBillboardSolidPSO.m_depthStencilState = drawMaskedDSS;
+    reflectBillboardSolidPSO.m_stencilRef = 1;
+
+    reflectBillboardWirePSO = reflectBillboardSolidPSO;
+    reflectBillboardWirePSO.m_rasterizerState = wireBothRS;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

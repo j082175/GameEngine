@@ -455,7 +455,7 @@ void AppBase::RenderOpaqueObjects() {
         }
     }
 
-    AppBase::SetPipelineState(Graphics::billboardPSO);
+    AppBase::SetPipelineState(m_drawAsWire ? Graphics::billboardWirePSO : Graphics::billboardSolidPSO);
     m_billboard->Render(m_context);
 }
 
@@ -486,7 +486,7 @@ void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
             m_skybox2->Render(m_context);
         }
 
-         AppBase::SetPipelineState(Graphics::reflectBillboardPSO);
+         AppBase::SetPipelineState(m_drawAsWire? Graphics::reflectBillboardWirePSO : Graphics::reflectBillboardSolidPSO);
          m_billboard->Render(m_context);
 
         // 거울 4. 거울 자체의 재질을 "Blend"로 그림
