@@ -39,8 +39,6 @@ class ExampleApp : public AppBase {
 	ComPtr<ID3D11ComputeShader> m_cs;
     ComputePSO m_pso;
 
-	std::map<std::string, std::shared_ptr<Model>> m_basicListMap;
-
 	Timer m_timer;
 };
 

@@ -66,10 +66,11 @@ bool ExampleApp::InitScene() {
         // m_mirrorPlane = SimpleMath::Plane(position, Vector3(0.0f, 1.0f,
         // 0.0f)); m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-        std::shared_ptr<Plane> mirrorPlane = std::make_shared<Plane>(position, Vector3(0.0f, 1.0f, 0.0f));
+        std::shared_ptr<Plane> mirrorPlane =
+            std::make_shared<Plane>(position, Vector3(0.0f, 1.0f, 0.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-		m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+        m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -101,7 +102,7 @@ bool ExampleApp::InitScene() {
             std::make_shared<Plane>(position, Vector3(0.0f, 0.0f, -1.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-		//m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+        // m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -150,6 +151,7 @@ bool ExampleApp::InitScene() {
         newModel->m_name = "MainSphere";
 
         m_basicList.push_back(newModel); // 리스트에 등록
+        m_basicListMap.insert(std::make_pair("MainSphere", newModel));
     }
 
     // 추가 물체1
@@ -200,9 +202,9 @@ bool ExampleApp::InitScene() {
         newModel->UpdateConstantBuffers(m_device, m_context);
         newModel->m_isPickable = true; // 마우스로 선택/이동 가능
         newModel->m_name = "SecondSphere";
-        m_basicList.push_back(newModel);
 
-        m_basicListMap.insert(std::make_pair("SecondSphere", newModel));
+        // m_basicList.push_back(newModel);
+        // m_basicListMap.insert(std::make_pair("SecondSphere", newModel));
     }
 
     // 추가 물체3
@@ -248,8 +250,8 @@ bool ExampleApp::InitScene() {
         newModel->UpdateConstantBuffers(m_device, m_context);
         newModel->m_isPickable = true; // 마우스로 선택/이동 가능
         newModel->m_name = "Box";
-        m_basicList.push_back(newModel);
-        m_basicListMap.insert(std::make_pair("firstBox", newModel));
+        // m_basicList.push_back(newModel);
+        // m_basicListMap.insert(std::make_pair("firstBox", newModel));
     }
 
     // Billboard
@@ -302,16 +304,16 @@ void ExampleApp::Update(float dt) {
         // iter->second->UpdateConstantBuffers(m_device, m_context);
     }
 
-	iter = m_basicListMap.find("firstBox");
+    iter = m_basicListMap.find("firstBox");
     if (iter != m_basicListMap.end()) {
         auto model = iter->second;
 
-		Vector3 n(0.f, 1.f, 0.f);
+        Vector3 n(0.f, 1.f, 0.f);
         Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
 
-        //model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
-        //                      model->m_worldRow);
-	}
+        // model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
+        //                       model->m_worldRow);
+    }
 }
 
 void ExampleApp::Render() {
@@ -415,12 +417,12 @@ void ExampleApp::UpdateGUI() {
         else
             Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
 
-        //ImGui::SliderFloat("Metallic",
-        //                   &m_mirror->m_materialConsts.GetCpu().metallicFactor,
-        //                   0.0f, 1.0f);
-        //ImGui::SliderFloat("Roughness",
-        //                   &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
-        //                   0.0f, 1.0f);
+        // ImGui::SliderFloat("Metallic",
+        //                    &m_mirror->m_materialConsts.GetCpu().metallicFactor,
+        //                    0.0f, 1.0f);
+        // ImGui::SliderFloat("Roughness",
+        //                    &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
+        //                    0.0f, 1.0f);
 
         ImGui::TreePop();
     }
@@ -439,7 +441,7 @@ void ExampleApp::UpdateGUI() {
                            0.5f);
         ImGui::TreePop();
     }
-	
+
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
     if (ImGui::TreeNode("Material")) {
         ImGui::SliderFloat("LodBias", &m_globalConstsCPU.lodBias, 0.0f, 10.0f);

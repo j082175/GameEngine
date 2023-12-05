@@ -158,7 +158,8 @@ bool AppBase::InitScene() {
         m_globalConstsCPU.lights[0].spotPower = 3.0f;
         m_globalConstsCPU.lights[0].radius = 0.04f;
         m_globalConstsCPU.lights[0].type =
-            LIGHT_SPOT | LIGHT_SHADOW; // Point with shadow
+            LIGHT_POINT | LIGHT_SHADOW; // Point with shadow
+        //m_globalConstsCPU.lights[0].type = LIGHT_OFF;
 
         // 조명 1의 위치와 방향은 Update()에서 설정
         m_globalConstsCPU.lights[1].radiance = Vector3(5.0f);
@@ -231,8 +232,6 @@ void AppBase::Update(float dt) {
     const Matrix viewRow = m_camera.GetViewRow();
     const Matrix projRow = m_camera.GetProjRow();
 
-    UpdateLights(dt);
-
     // 공용 ConstantBuffer 업데이트
     AppBase::UpdateGlobalConstants(dt, eyeWorld, viewRow, projRow, reflectRow);
 
@@ -254,9 +253,15 @@ void AppBase::Update(float dt) {
     for (auto &i : m_basicList) {
         i->UpdateConstantBuffers(m_device, m_context);
     }
+
+    UpdateLights(dt);
 }
 
 void AppBase::UpdateLights(float dt) {
+
+    auto d = m_basicListMap.find("MainSphere");
+    Vector3 f = d->second->m_worldRow.Translation();
+    std::cout << f.x << ' ' << f.y << ' ' << f.z << '\n';
 
     // 회전하는 lights[1] 업데이트
     static Vector3 lightDev = Vector3(1.0f, 0.0f, 0.0f);
@@ -265,14 +270,20 @@ void AppBase::UpdateLights(float dt) {
             lightDev, Matrix::CreateRotationY(dt * 3.141592f * 0.5f));
     }
     m_globalConstsCPU.lights[1].position = Vector3(0.0f, 1.1f, 2.0f) + lightDev;
-    Vector3 focusPosition = Vector3(0.0f, -0.5f, 1.7f);
+    // Vector3 focusPosition = Vector3(0.0f, -0.5f, 1.7f);
+    Vector3 focusPosition =
+        m_basicListMap.find("MainSphere")->second->m_worldRow.Translation();
     m_globalConstsCPU.lights[1].direction =
         focusPosition - m_globalConstsCPU.lights[1].position;
     m_globalConstsCPU.lights[1].direction.Normalize();
 
+	m_globalConstsCPU.lights[0].direction =
+        focusPosition - m_globalConstsCPU.lights[0].position;
+    m_globalConstsCPU.lights[0].direction.Normalize();
+
     // 그림자맵을 만들기 위한 시점
     for (int i = 0; i < MAX_LIGHTS; i++) {
-        const auto &light = m_globalConstsCPU.lights[i];
+        auto &light = m_globalConstsCPU.lights[i];
         if (light.type & LIGHT_SHADOW) {
 
             Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
@@ -280,11 +291,15 @@ void AppBase::UpdateLights(float dt) {
                 up = Vector3(1.0f, 0.0f, 0.0f);
 
             // 그림자맵을 만들 때 필요
+            Vector3 focusPos = m_basicListMap.find("MainSphere")
+                                   ->second->m_worldRow.Translation();
+            // light.direction = focusPos;
+            // light.direction.Normalize();
             Matrix lightViewRow = XMMatrixLookAtLH(
                 light.position, light.position + light.direction, up);
 
             Matrix lightProjRow = XMMatrixPerspectiveFovLH(
-                XMConvertToRadians(120.0f), 1.0f, 0.1f, 10.0f);
+                XMConvertToRadians(120.0f), 1.0f, 0.1f, 20.0f);
 
             m_shadowGlobalConstsCPU[i].eyeWorld = light.position;
             m_shadowGlobalConstsCPU[i].view = lightViewRow.Transpose();
@@ -455,7 +470,8 @@ void AppBase::RenderOpaqueObjects() {
         }
     }
 
-    AppBase::SetPipelineState(m_drawAsWire ? Graphics::billboardWirePSO : Graphics::billboardSolidPSO);
+    AppBase::SetPipelineState(m_drawAsWire ? Graphics::billboardWirePSO
+                                           : Graphics::billboardSolidPSO);
     m_billboard->Render(m_context);
 }
 
@@ -486,8 +502,10 @@ void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
             m_skybox2->Render(m_context);
         }
 
-         AppBase::SetPipelineState(m_drawAsWire? Graphics::reflectBillboardWirePSO : Graphics::reflectBillboardSolidPSO);
-         m_billboard->Render(m_context);
+        AppBase::SetPipelineState(m_drawAsWire
+                                      ? Graphics::reflectBillboardWirePSO
+                                      : Graphics::reflectBillboardSolidPSO);
+        m_billboard->Render(m_context);
 
         // 거울 4. 거울 자체의 재질을 "Blend"로 그림
         AppBase::SetPipelineState(m_drawAsWire ? Graphics::mirrorBlendWirePSO
@@ -980,6 +998,9 @@ void AppBase::ProcessMouseControl() {
     // Cursor sphere 그리기
     if (activeModel) {
         Vector3 translation = activeModel->m_worldRow.Translation();
+        // std::cout << translation.x << ' ' << translation.y << ' '
+        //           << translation.z << '\n';
+
         activeModel->m_worldRow.Translation(Vector3(0.0f));
 
         activeModel->UpdateWorldRow(

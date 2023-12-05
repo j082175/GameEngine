@@ -19,8 +19,8 @@
 
 namespace hlab {
 
-using DirectX::SimpleMath::Plane;
 using DirectX::BoundingSphere;
+using DirectX::SimpleMath::Plane;
 using DirectX::SimpleMath::Quaternion;
 using DirectX::SimpleMath::Ray;
 using DirectX::SimpleMath::Vector3;
@@ -198,6 +198,8 @@ class AppBase {
     // 거울이 아닌 물체들의 리스트 (for문으로 그리기 위함)
     vector<shared_ptr<Model>> m_basicList;
     std::shared_ptr<BillboardModel> m_billboard;
+
+    std::map<std::string, std::shared_ptr<Model>> m_basicListMap;
 
     int m_skyboxCheck = 0;
 
