@@ -4,6 +4,7 @@
 #include "ExampleApp.h"
 #include "Example_TEMPLATE.h"
 #include "Test.h"
+#include "Party.h"
 
 //#include "Ex1401_Basic.h"
 //#include "Ex1402_Blur.h"
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
         app = make_unique<hlab::ExampleApp>();
         break;
     case 1:
-        app = make_unique<hlab::Example_TEMPLATE>();
+        app = make_unique<hlab::Party>();
         break;
     case 2:
         app = make_unique<hlab::Test>();

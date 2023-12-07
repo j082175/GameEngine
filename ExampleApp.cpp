@@ -203,8 +203,8 @@ bool ExampleApp::InitScene() {
         newModel->m_isPickable = true; // 마우스로 선택/이동 가능
         newModel->m_name = "SecondSphere";
 
-        // m_basicList.push_back(newModel);
-        // m_basicListMap.insert(std::make_pair("SecondSphere", newModel));
+        m_basicList.push_back(newModel);
+        m_basicListMap.insert(std::make_pair("SecondSphere", newModel));
     }
 
     // 추가 물체3

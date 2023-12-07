@@ -68,6 +68,9 @@
     <ClCompile Include="Test.cpp">
       <Filter>Examples\Example</Filter>
     </ClCompile>
+    <ClCompile Include="Party.cpp">
+      <Filter>Examples\Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h" />
@@ -152,6 +155,9 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffers.h">
       <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="Party.h">
+      <Filter>Examples\Example</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

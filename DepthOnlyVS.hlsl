@@ -34,12 +34,13 @@ float4 main(VertexShaderInput input) : SV_POSITION
     for(int i = 0; i < 8; ++i)
     {
         // TODO: 
+		posModel += weights[i] * mul(float4(input.posModel, 1.f), boneTransforms[indices[i]]);
     }
 
-    // input.posModel = posModel;
+     input.posModel = posModel;
 
 #endif
     
-    float4 pos = mul(float4(input.posModel, 1.0f), world);
-    return mul(pos, viewProj);
+	float4 pos = mul(float4(input.posModel, 1.0f), world);
+	return mul(pos, viewProj);
 }

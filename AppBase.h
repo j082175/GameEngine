@@ -174,7 +174,7 @@ class AppBase {
     IBL m_SRVs;
     IBL m_SRVs2;
 
-    bool m_lightRotate = false;
+    bool m_lightRotate = true;
     bool m_pauseAnimation = false;
 
     // 여러 예제들 공용

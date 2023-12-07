@@ -153,13 +153,13 @@ bool AppBase::InitScene() {
     {
         // 조명 0은 고정
         m_globalConstsCPU.lights[0].radiance = Vector3(5.0f);
-        m_globalConstsCPU.lights[0].position = Vector3(0.0f, 1.5f, 1.1f);
+        m_globalConstsCPU.lights[0].position = Vector3(0.0f, 4.5f, 1.1f);
         m_globalConstsCPU.lights[0].direction = Vector3(0.0f, -1.0f, 0.0f);
         m_globalConstsCPU.lights[0].spotPower = 3.0f;
         m_globalConstsCPU.lights[0].radius = 0.04f;
         m_globalConstsCPU.lights[0].type =
             LIGHT_POINT | LIGHT_SHADOW; // Point with shadow
-        //m_globalConstsCPU.lights[0].type = LIGHT_OFF;
+        // m_globalConstsCPU.lights[0].type = LIGHT_OFF;
 
         // 조명 1의 위치와 방향은 Update()에서 설정
         m_globalConstsCPU.lights[1].radiance = Vector3(5.0f);
@@ -171,6 +171,14 @@ bool AppBase::InitScene() {
 
         // 조명 2는 꺼놓음
         m_globalConstsCPU.lights[2].type = LIGHT_OFF;
+
+        // m_globalConstsCPU.lights[2].radiance = Vector3(5.0f);
+        // m_globalConstsCPU.lights[2].position = Vector3(0.0f, 1.5f, 1.1f);
+        // m_globalConstsCPU.lights[2].direction = Vector3(0.0f, -1.0f, 0.0f);
+        // m_globalConstsCPU.lights[2].spotPower = 3.0f;
+        // m_globalConstsCPU.lights[2].radius = 0.04f;
+        // m_globalConstsCPU.lights[2].type =
+        //     LIGHT_POINT | LIGHT_SHADOW; // Point with shadow
     }
 
     // 조명 위치 표시
@@ -259,9 +267,9 @@ void AppBase::Update(float dt) {
 
 void AppBase::UpdateLights(float dt) {
 
-    auto d = m_basicListMap.find("MainSphere");
-    Vector3 f = d->second->m_worldRow.Translation();
-    std::cout << f.x << ' ' << f.y << ' ' << f.z << '\n';
+    // auto d = m_basicListMap.find("MainSphere");
+    // Vector3 f = d->second->m_worldRow.Translation();
+    // std::cout << f.x << ' ' << f.y << ' ' << f.z << '\n';
 
     // 회전하는 lights[1] 업데이트
     static Vector3 lightDev = Vector3(1.0f, 0.0f, 0.0f);
@@ -270,16 +278,22 @@ void AppBase::UpdateLights(float dt) {
             lightDev, Matrix::CreateRotationY(dt * 3.141592f * 0.5f));
     }
     m_globalConstsCPU.lights[1].position = Vector3(0.0f, 1.1f, 2.0f) + lightDev;
-    // Vector3 focusPosition = Vector3(0.0f, -0.5f, 1.7f);
-    Vector3 focusPosition =
-        m_basicListMap.find("MainSphere")->second->m_worldRow.Translation();
-    m_globalConstsCPU.lights[1].direction =
-        focusPosition - m_globalConstsCPU.lights[1].position;
-    m_globalConstsCPU.lights[1].direction.Normalize();
+    Vector3 focusPosition = Vector3(0.0f, -0.5f, 1.7f);
+    // Vector3 focusPosition =
+    //     m_basicListMap.find("MainSphere")->second->m_worldRow.Translation();
+    // m_globalConstsCPU.lights[1].direction =
+    //     focusPosition - m_globalConstsCPU.lights[1].position;
+    // m_globalConstsCPU.lights[1].direction.Normalize();
 
-	m_globalConstsCPU.lights[0].direction =
-        focusPosition - m_globalConstsCPU.lights[0].position;
-    m_globalConstsCPU.lights[0].direction.Normalize();
+    // m_globalConstsCPU.lights[0].direction =
+    //     focusPosition - m_globalConstsCPU.lights[0].position;
+    // m_globalConstsCPU.lights[0].direction.Normalize();
+
+    // focusPosition =
+    //     m_basicListMap.find("SecondSphere")->second->m_worldRow.Translation();
+    // m_globalConstsCPU.lights[2].direction =
+    //     focusPosition - m_globalConstsCPU.lights[2].position;
+    // m_globalConstsCPU.lights[2].direction.Normalize();
 
     // 그림자맵을 만들기 위한 시점
     for (int i = 0; i < MAX_LIGHTS; i++) {
@@ -291,8 +305,8 @@ void AppBase::UpdateLights(float dt) {
                 up = Vector3(1.0f, 0.0f, 0.0f);
 
             // 그림자맵을 만들 때 필요
-            Vector3 focusPos = m_basicListMap.find("MainSphere")
-                                   ->second->m_worldRow.Translation();
+            //Vector3 focusPos = m_basicListMap.find("MainSphere")
+            //                       ->second->m_worldRow.Translation();
             // light.direction = focusPos;
             // light.direction.Normalize();
             Matrix lightViewRow = XMMatrixLookAtLH(
@@ -343,7 +357,7 @@ void AppBase::RenderDepthOnly() {
                                      1.0f, 0);
 
     AppBase::SetPipelineState(Graphics::depthOnlyPSO);
-    m_billboard->Render(m_context);
+    //m_billboard->Render(m_context);
 
     AppBase::SetGlobalConsts(m_globalConstsGPU);
     for (const auto &model : m_basicList) {
@@ -472,7 +486,7 @@ void AppBase::RenderOpaqueObjects() {
 
     AppBase::SetPipelineState(m_drawAsWire ? Graphics::billboardWirePSO
                                            : Graphics::billboardSolidPSO);
-    m_billboard->Render(m_context);
+    //m_billboard->Render(m_context);
 }
 
 void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
@@ -505,7 +519,7 @@ void AppBase::RenderMirror(const std::shared_ptr<Model> &mirror) {
         AppBase::SetPipelineState(m_drawAsWire
                                       ? Graphics::reflectBillboardWirePSO
                                       : Graphics::reflectBillboardSolidPSO);
-        m_billboard->Render(m_context);
+        //m_billboard->Render(m_context);
 
         // 거울 4. 거울 자체의 재질을 "Blend"로 그림
         AppBase::SetPipelineState(m_drawAsWire ? Graphics::mirrorBlendWirePSO

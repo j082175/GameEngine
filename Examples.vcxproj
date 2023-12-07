@@ -165,6 +165,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Noise.cpp" />
+    <ClCompile Include="Party.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="SphSimulation.cpp" />
     <ClCompile Include="StableFluids.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="GraphicsPSO.h" />
     <ClInclude Include="GrassModel.h" />
+    <ClInclude Include="Party.h" />
     <ClInclude Include="RigidBodyActor.h" />
     <ClInclude Include="SkeletalMeshActor.h" />
     <ClInclude Include="ImageFilter.h" />
@@ -340,6 +342,7 @@
     </FxCompile>
     <FxCompile Include="TestCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
     </FxCompile>
     <FxCompile Include="VolumetricFirePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
