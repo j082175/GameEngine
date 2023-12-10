@@ -37,19 +37,27 @@ bool Party::InitScene() {
         // 조명 0은 고정
         m_globalConstsCPU.lights[0].radiance = Vector3(5.0f);
         m_globalConstsCPU.lights[0].position = Vector3(0.0f, 2.0f, 4.0f);
+
         m_globalConstsCPU.lights[0].direction = Vector3(0.2f, -1.0f, 0.0f);
-        m_globalConstsCPU.lights[0].spotPower = 10.0f;
+        m_globalConstsCPU.lights[0].spotPower = 5.0f;
         m_globalConstsCPU.lights[0].radius = 0.1f;
         m_globalConstsCPU.lights[0].haloRadius = 2.f;
         m_globalConstsCPU.lights[0].haloStrength = 10.f;
+        m_globalConstsCPU.lights[0].lightColor = Vector3(1.f, 0.f, 0.f);
 
         m_globalConstsCPU.lights[0].type = LIGHT_SPOT | LIGHT_SHADOW;
-        m_globalConstsCPU.lights[0].type = LIGHT_OFF;
+        // m_globalConstsCPU.lights[0].type = LIGHT_OFF;
 
         m_globalConstsCPU.lights[1].position = Vector3(0.0f, 2.0f, 4.0f);
+        m_globalConstsCPU.lights[1].spotPower = 5.f;
+        m_globalConstsCPU.lights[1].lightColor = Vector3(0.f, 1.f, 0.f);
         m_globalConstsCPU.lights[1].type = LIGHT_SPOT | LIGHT_SHADOW;
 
-        m_globalConstsCPU.lights[2].type = LIGHT_OFF;
+        m_globalConstsCPU.lights[2].position = Vector3(0.0f, 2.0f, 4.0f);
+        m_globalConstsCPU.lights[2].spotPower = 5.f;
+        m_globalConstsCPU.lights[2].lightColor = Vector3(0.f, 0.f, 1.f);
+        m_globalConstsCPU.lights[2].type = LIGHT_SPOT | LIGHT_SHADOW;
+        //m_globalConstsCPU.lights[2].type = LIGHT_OFF;
     }
 
     // 바닥(거울)
@@ -70,7 +78,7 @@ bool Party::InitScene() {
         m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
         m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
-        Vector3 position = Vector3(0.0f, 0.0f, 22.0f);
+        Vector3 position = Vector3(0.0f, 0.0f, 0.0f);
         m_ground->UpdateWorldRow(Matrix::CreateRotationX(3.141592f * 0.5f) *
                                  Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
@@ -472,51 +480,51 @@ bool Party::InitScene() {
     }
 
     // Eve
-    {
-        string path = "../Assets/Characters/Eve/";
-        vector<string> clipNames = {"Dancing Maraschino Step.fbx"};
+    //{
+    //    string path = "../Assets/Characters/Eve/";
+    //    vector<string> clipNames = {"Dancing Maraschino Step.fbx"};
 
-        AnimationData aniData;
+    //    AnimationData aniData;
 
-        auto [meshes, _] =
-            GeometryGenerator::ReadAnimationFromFile(path, "character.fbx");
+    //    auto [meshes, _] =
+    //        GeometryGenerator::ReadAnimationFromFile(path, "character.fbx");
 
-        std::cout << meshes.size() << '\n';
+    //    std::cout << meshes.size() << '\n';
 
-        for (auto &name : clipNames) {
-            auto [_, ani] =
-                GeometryGenerator::ReadAnimationFromFile(path, name);
+    //    for (auto &name : clipNames) {
+    //        auto [_, ani] =
+    //            GeometryGenerator::ReadAnimationFromFile(path, name);
 
-            if (aniData.clips.empty()) {
-                aniData = ani;
-            } else {
-                aniData.clips.push_back(ani.clips.front());
-            }
-        }
+    //        if (aniData.clips.empty()) {
+    //            aniData = ani;
+    //        } else {
+    //            aniData.clips.push_back(ani.clips.front());
+    //        }
+    //    }
 
-        {
-            Vector3 center(2.0f, 0.5f, 3.0f);
-            // m_characterArr[0] =
-            //     make_shared<SkinnedMeshModel>(m_device, m_context, meshes,
-            //     aniData);
-            m_characterArr.push_back(make_shared<SkinnedMeshModel>(
-                m_device, m_context, meshes, aniData));
+    //    {
+    //        Vector3 center(2.0f, 0.5f, 3.0f);
+    //        // m_characterArr[0] =
+    //        //     make_shared<SkinnedMeshModel>(m_device, m_context, meshes,
+    //        //     aniData);
+    //        m_characterArr.push_back(make_shared<SkinnedMeshModel>(
+    //            m_device, m_context, meshes, aniData));
 
-            m_characterArr.back()->m_materialConsts.GetCpu().albedoFactor =
-                Vector3(1.0f);
-            m_characterArr.back()->m_materialConsts.GetCpu().roughnessFactor =
-                0.8f;
-            m_characterArr.back()->m_materialConsts.GetCpu().metallicFactor =
-                0.0f;
-            m_characterArr.back()->UpdateWorldRow(
-                Matrix::CreateScale(1.0f) * Matrix::CreateTranslation(center));
+    //        m_characterArr.back()->m_materialConsts.GetCpu().albedoFactor =
+    //            Vector3(1.0f);
+    //        m_characterArr.back()->m_materialConsts.GetCpu().roughnessFactor =
+    //            0.8f;
+    //        m_characterArr.back()->m_materialConsts.GetCpu().metallicFactor =
+    //            0.0f;
+    //        m_characterArr.back()->UpdateWorldRow(
+    //            Matrix::CreateScale(1.0f) * Matrix::CreateTranslation(center));
 
-            m_basicList.push_back(m_characterArr.back()); // 리스트에 등록
-            m_basicListMap.insert(
-                std::make_pair("Mixamo", m_characterArr.back()));
-            m_pickedModel = m_characterArr.back();
-        }
-    }
+    //        m_basicList.push_back(m_characterArr.back()); // 리스트에 등록
+    //        m_basicListMap.insert(
+    //            std::make_pair("Mixamo", m_characterArr.back()));
+    //        m_pickedModel = m_characterArr.back();
+    //    }
+    //}
 
     // Club Atomic: Where the holograms go.
     {
@@ -549,7 +557,7 @@ bool Party::InitScene() {
         std::shared_ptr<Plane> mirrorPlane = std::make_shared<Plane>(
             SimpleMath::Plane(position, Vector3(0.f, 1.f, 0.f)));
 
-         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
 
     // beautiful-sphere
@@ -571,15 +579,16 @@ bool Party::InitScene() {
         m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
         m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
-        Vector3 position = Vector3(0.0f, 2.0f, 4.0f);
+        Vector3 position = Vector3(0.0f, 2.0f, 0.0f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
                 1.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
-        m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+        m_ground->m_castShadow = true; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = true;
 
         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+        m_basicListMap.insert(std::pair("BeautifulSphere", m_ground));
     }
 
     //// Night Club
@@ -622,7 +631,8 @@ bool Party::InitScene() {
     //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
     //    // mesh.emissiveTextureFilename = "";
     //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
-    //    // mesh.metallicTextureFilename = path + "stringy_marble_Metallic.png";
+    //    // mesh.metallicTextureFilename = path +
+    //    "stringy_marble_Metallic.png";
     //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
     //    // mesh.roughnessTextureFilename = path +
     //    // "stringy_marble_Roughness.png";
@@ -644,10 +654,103 @@ bool Party::InitScene() {
     //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     //}
 
+
     return true;
 }
 
-void Party::UpdateLights(float dt) { AppBase::UpdateLights(dt); }
+void Party::UpdateLights(float dt) {
+    // AppBase::UpdateLights(dt);
+
+    // light 0
+    m_globalConstsCPU.lights[1].position = Vector3(0.f, 2.f, 0.f);
+
+    static Vector3 focusPosition = Vector3(-1.f, -1.f, 1.f);
+    focusPosition = Vector3::Transform(
+        focusPosition, Matrix::CreateRotationY(dt * 3.14 * 0.5f));
+
+    m_globalConstsCPU.lights[1].direction =
+        focusPosition - m_globalConstsCPU.lights[1].position;
+
+    m_globalConstsCPU.lights[1].direction.Normalize();
+
+    // light 1
+    m_globalConstsCPU.lights[0].position = Vector3(0.f, 2.f, 0.f);
+
+    static Vector3 focusPosition2 = Vector3(1.f, -1.f, 1.f);
+    focusPosition2 = Vector3::Transform(
+        focusPosition2, Matrix::CreateRotationY(dt * 3.14 * 0.5f));
+
+    m_globalConstsCPU.lights[0].direction =
+        focusPosition2 - m_globalConstsCPU.lights[1].position;
+
+    m_globalConstsCPU.lights[0].direction.Normalize();
+
+    // light 2
+    m_globalConstsCPU.lights[2].position = Vector3(0.f, 2.f, 0.f);
+
+    static Vector3 focusPosition3 = Vector3(1.f, -1.f, -1.f);
+    focusPosition3 = Vector3::Transform(
+        focusPosition3, Matrix::CreateRotationY(dt * 3.14 * 0.5f));
+
+    m_globalConstsCPU.lights[2].direction =
+        focusPosition3 - m_globalConstsCPU.lights[2].position;
+
+    m_globalConstsCPU.lights[2].direction.Normalize();
+
+    // 그림자맵을 만들기 위한 시점
+    for (int i = 0; i < MAX_LIGHTS; i++) {
+        auto &light = m_globalConstsCPU.lights[i];
+        if (light.type & LIGHT_SHADOW) {
+
+            Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+            if (abs(up.Dot(light.direction) + 1.0f) < 1e-5)
+                up = Vector3(1.0f, 0.0f, 0.0f);
+
+            // 그림자맵을 만들 때 필요
+            // Vector3 focusPos = m_basicListMap.find("MainSphere")
+            //                       ->second->m_worldRow.Translation();
+            // light.direction = focusPos;
+            // light.direction.Normalize();
+            Matrix lightViewRow = XMMatrixLookAtLH(
+                light.position, light.position + light.direction, up);
+
+            Matrix lightProjRow = XMMatrixPerspectiveFovLH(
+                XMConvertToRadians(120.0f), 1.0f, 0.1f, 20.0f);
+
+            m_shadowGlobalConstsCPU[i].eyeWorld = light.position;
+            m_shadowGlobalConstsCPU[i].view = lightViewRow.Transpose();
+            m_shadowGlobalConstsCPU[i].proj = lightProjRow.Transpose();
+            m_shadowGlobalConstsCPU[i].invProj =
+                lightProjRow.Invert().Transpose();
+            m_shadowGlobalConstsCPU[i].viewProj =
+                (lightViewRow * lightProjRow).Transpose();
+
+            // LIGHT_FRUSTUM_WIDTH 확인
+            // Vector4 eye(0.0f, 0.0f, 0.0f, 1.0f);
+            // Vector4 xLeft(-1.0f, -1.0f, 0.0f, 1.0f);
+            // Vector4 xRight(1.0f, 1.0f, 0.0f, 1.0f);
+            // eye = Vector4::Transform(eye, lightProjRow);
+            // xLeft = Vector4::Transform(xLeft, lightProjRow.Invert());
+            // xRight = Vector4::Transform(xRight, lightProjRow.Invert());
+            // xLeft /= xLeft.w;
+            // xRight /= xRight.w;
+            // cout << "LIGHT_FRUSTUM_WIDTH = " << xRight.x - xLeft.x <<
+            // endl;
+
+            D3D11Utils::UpdateBuffer(m_context, m_shadowGlobalConstsCPU[i],
+                                     m_shadowGlobalConstsGPU[i]);
+
+            // 그림자를 실제로 렌더링할 때 필요
+            m_globalConstsCPU.lights[i].viewProj =
+                m_shadowGlobalConstsCPU[i].viewProj;
+            m_globalConstsCPU.lights[i].invProj =
+                m_shadowGlobalConstsCPU[i].invProj;
+
+            // 반사된 장면에서도 그림자를 그리고 싶다면 조명도 반사시켜서
+            // 넣어주면 됩니다.
+        }
+    }
+}
 
 void Party::Update(float dt) {
     AppBase::Update(dt);
@@ -665,6 +768,13 @@ void Party::Update(float dt) {
         UpdateAnimationDance(m_characterArr[i], dt, frameCount[i], state[i],
                              isRun[i]);
     }
+
+	auto m = m_basicListMap.find("BeautifulSphere");
+
+	if (m != m_basicListMap.end()) {
+        m->second->UpdateWorldRow(Matrix::CreateRotationY(dt) *
+                                  m->second->m_worldRow);
+	}
 }
 
 void Party::Render() {

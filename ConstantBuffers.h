@@ -90,7 +90,12 @@ struct Light {
 
     Matrix viewProj; // 그림자 렌더링에 필요
     Matrix invProj;  // 그림자 렌더링 디버깅용
+
+	Vector3 lightColor;
+    float dummy;
 };
+
+static_assert(sizeof(Light) % 16 == 0);
 
 // register(b1) 사용
 __declspec(align(256)) struct GlobalConstants {

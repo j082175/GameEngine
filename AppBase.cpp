@@ -563,7 +563,7 @@ void AppBase::Render() {
         RenderMirror(i.first);
     }
 
-    RenderCoordinateView();
+    //RenderCoordinateView();
 
     PostRender();
 }

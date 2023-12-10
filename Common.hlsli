@@ -48,6 +48,8 @@ struct Light
 
     matrix viewProj;
     matrix invProj;
+	
+	float3 lightColor;
 };
 
 // °ø¿ë Constants

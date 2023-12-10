@@ -305,7 +305,7 @@ PixelShaderOutput main(PixelShaderInput input)
 			float3 F0 = lerp(Fdielectric, albedo.rgb, metallic);
 			float3 F = SchlickFresnel(F0, max(0.0, dot(halfway, pixelToEye)));
 			float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metallic);
-			float3 diffuseBRDF = kd * albedo.rgb;
+			float3 diffuseBRDF = saturate(kd * albedo.rgb + lights[i].lightColor);
 
             // Sphere Normalization
 			float alpha = roughness * roughness;
