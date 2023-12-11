@@ -159,6 +159,9 @@
     <ClInclude Include="Party.h">
       <Filter>Examples\Example</Filter>
     </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Examples\Example</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

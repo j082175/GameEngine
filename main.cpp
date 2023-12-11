@@ -5,6 +5,7 @@
 #include "Example_TEMPLATE.h"
 #include "Test.h"
 #include "Party.h"
+#include "World.h"
 
 //#include "Ex1401_Basic.h"
 //#include "Ex1402_Blur.h"
@@ -50,6 +51,9 @@ int main(int argc, char *argv[]) {
         break;
     case 2:
         app = make_unique<hlab::Test>();
+        break;
+    case 3:
+        app = make_unique<hlab::World>();
         break;
     /*case 1401:
         app = make_unique<hlab::Ex1401_Basic>();

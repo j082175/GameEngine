@@ -216,6 +216,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UniformGrid.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
