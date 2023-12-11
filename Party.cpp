@@ -20,6 +20,8 @@ Party::Party() : AppBase() {}
 
 bool Party::InitScene() {
 
+	string basePath = "C:\\Users\\aa\\Documents\\Google Drive\\Graphics Assets\\Assets\\";
+
     AppBase::m_globalConstsCPU.strengthIBL = 1.0f;
 
     AppBase::m_camera.Reset(Vector3(3.74966f, 5.03645f, -2.54918f), -0.819048f,
@@ -152,7 +154,9 @@ bool Party::InitScene() {
 
     // Mixamo Dance
     {
-        string path = "../Assets/Characters/Mixamo/";
+        //string path = "../Assets/Characters/Mixamo/";
+        string path = basePath + "Characters/Mixamo/";
+
         vector<string> clipNames = {"Hip Hop Dancing.fbx"};
 
         AnimationData aniData;
@@ -199,7 +203,9 @@ bool Party::InitScene() {
 
     // Amy
     {
-        string path = "../Assets/Characters/Amy/";
+        //string path = "../Assets/Characters/Amy/";
+        string path = basePath + "Characters/Amy/";
+
         vector<string> clipNames = {"Silly Dancing.fbx"};
 
         AnimationData aniData;
@@ -246,7 +252,9 @@ bool Party::InitScene() {
 
     // Arissa
     {
-        string path = "../Assets/Characters/Arissa/";
+        //string path = "../Assets/Characters/Arissa/";
+        string path = basePath + "Characters/Arissa/";
+
         vector<string> clipNames = {"Bboy Hip Hop Move.fbx"};
 
         AnimationData aniData;
@@ -293,7 +301,9 @@ bool Party::InitScene() {
 
     // Kachujin
     {
-        string path = "../Assets/Characters/Kachujin/";
+        //string path = "../Assets/Characters/Kachujin/";
+        string path = basePath + "Characters/kachujin/";
+
         vector<string> clipNames = {"Rumba Dancing.fbx"};
 
         AnimationData aniData;
@@ -340,7 +350,9 @@ bool Party::InitScene() {
 
     // Boss
     {
-        string path = "../Assets/Characters/Boss/";
+        //string path = "../Assets/Characters/Boss/";
+        string path = basePath + "Characters/Boss/";
+
         vector<string> clipNames = {"Swing Dancing.fbx"};
 
         AnimationData aniData;
@@ -387,7 +399,9 @@ bool Party::InitScene() {
 
     // Maria
     {
-        string path = "../Assets/Characters/Maria/";
+        //string path = "../Assets/Characters/Maria/";
+        string path = basePath + "Characters/Maria/";
+
         vector<string> clipNames = {"Hip Hop Dancing.fbx"};
 
         AnimationData aniData;
@@ -434,7 +448,9 @@ bool Party::InitScene() {
 
     // Erika
     {
-        string path = "../Assets/Characters/Erika/";
+        //string path = "../Assets/Characters/Erika/";
+        string path = basePath + "Characters/Erika/";
+
         vector<string> clipNames = {"Samba Dancing.fbx"};
 
         AnimationData aniData;
@@ -529,9 +545,11 @@ bool Party::InitScene() {
     // Club Atomic: Where the holograms go.
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
-        string basePath =
-            "../Assets/3DModel/club_atomic_where_the_holograms_go/";
-        auto mesh = GeometryGenerator::ReadFromFile(basePath, "scene.gltf");
+        //string basePath =
+        //    "../Assets/3DModel/club_atomic_where_the_holograms_go/";
+        string path = basePath + "3DModel/club_atomic_where_the_holograms_go/";
+
+        auto mesh = GeometryGenerator::ReadFromFile(path, "scene.gltf");
         // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
         // mesh.emissiveTextureFilename = "";
         // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
@@ -563,8 +581,10 @@ bool Party::InitScene() {
     // beautiful-sphere
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
-        string basePath = "../Assets/Models/beautiful-sphere/";
-        auto mesh = GeometryGenerator::ReadFromFile(basePath, "sphere.fbx");
+        //string basePath = "../Assets/Models/beautiful-sphere/";
+        string path = basePath + "Models/beautiful-sphere/";
+
+        auto mesh = GeometryGenerator::ReadFromFile(path, "sphere.fbx");
         // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
         // mesh.emissiveTextureFilename = "";
         // mesh.aoTextureFilename = path + "stringy_marble_ao.png";

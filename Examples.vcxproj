@@ -172,6 +172,7 @@
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UniformGrid.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />

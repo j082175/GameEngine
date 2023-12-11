@@ -126,7 +126,7 @@ bool AppBase::Initialize() {
 
     // 환경 박스 초기화
     {
-        MeshData skyboxMesh = GeometryGenerator::MakeBox(40.0f);
+        MeshData skyboxMesh = GeometryGenerator::MakeBox(1000.0f);
         std::reverse(skyboxMesh.indices.begin(), skyboxMesh.indices.end());
         m_skybox = make_shared<Model>(m_device, m_context, vector{skyboxMesh});
         m_skybox->m_name = "SkyBox";
@@ -134,7 +134,7 @@ bool AppBase::Initialize() {
 
     // 환경 박스2 초기화
     {
-        MeshData skyboxMesh = GeometryGenerator::MakeBox(40.0f);
+        MeshData skyboxMesh = GeometryGenerator::MakeBox(1000.0f);
         std::reverse(skyboxMesh.indices.begin(), skyboxMesh.indices.end());
         m_skybox2 = make_shared<Model>(m_device, m_context, vector{skyboxMesh});
         m_skybox2->m_name = "SkyBox2";
