@@ -464,9 +464,16 @@ bool World::InitScene() {
                                     vector{meshes[2], meshes[3]});
         m_tree.m_trunks->Initialize(m_device, m_context,
                                     vector{meshes[0], meshes[1], meshes[4]});
-		
-		m_tree.m_leaves->m_isPickable = true;
+
+        m_tree.m_leaves->m_isPickable = true;
         m_tree.m_trunks->m_isPickable = true;
+
+        if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
+            D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
+                                     m_tree.m_leaves->m_instancesGpu);
+            D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
+                                     m_tree.m_trunks->m_instancesGpu);
+        }
     }
 
     // Billboard
