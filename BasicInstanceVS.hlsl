@@ -78,7 +78,7 @@ PixelShaderInput main(VertexInstanceShaderInput input)
 	}
     
 	output.posModel = input.posModel;
-	output.normalWorld = mul(float4(input.normalModel, 1.f), input.insWorld).xyz;
+	output.normalWorld = mul(float4(input.normalModel, 0.f), input.insWorld).xyz;
 	output.normalWorld = mul(float4(output.normalWorld, 0.0f), worldIT).xyz;
 	output.normalWorld = normalize(output.normalWorld);
 	
@@ -97,7 +97,9 @@ PixelShaderInput main(VertexInstanceShaderInput input)
 
 	output.posProj = mul(float4(output.posWorld, 1.0), viewProj);
 	output.texcoord = input.texcoord;
-	output.tangentWorld = mul(float4(input.tangentModel, 0.0f), world).xyz;
+	
+	output.tangentWorld = mul(float4(input.tangentModel, 0.f), input.insWorld).xyz;
+	output.tangentWorld = mul(float4(output.tangentWorld, 0.0f), world).xyz;
 
 	return output;
 }

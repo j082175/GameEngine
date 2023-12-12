@@ -396,7 +396,7 @@ bool World::InitScene() {
         Vector3 position = Vector3(0.0f, 0.f, 0.0f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
-                2.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+                10.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = false;
@@ -422,6 +422,7 @@ bool World::InitScene() {
         m_tree.m_leaves->m_materialConsts.GetCpu().metallicFactor = 0.2f;
         m_tree.m_leaves->UpdateWorldRow(Matrix::CreateScale(1.0f) *
                                         Matrix::CreateTranslation(center));
+        //m_tree.m_leaves->m_isPickable = true;
 
         m_basicList.push_back(m_tree.m_leaves); // 리스트에 등록
 
@@ -438,10 +439,11 @@ bool World::InitScene() {
         m_tree.m_trunks->m_materialConsts.GetCpu().metallicFactor = 0.0f;
         m_tree.m_trunks->UpdateWorldRow(Matrix::CreateScale(1.0f) *
                                         Matrix::CreateTranslation(center));
+        //m_tree.m_trunks->m_isPickable = true;
 
         m_basicList.push_back(m_tree.m_trunks); // 리스트에 등록
 
-        std::mt19937 gen(0);
+        std::mt19937 gen(1);
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
@@ -451,13 +453,26 @@ bool World::InitScene() {
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
 
             center = Vector3::Transform(center, m_ground->m_worldRow);
-            center += Vector3(0.f, 0.5f, 0.f);
+            center += 1.f * Vector3(0.f, 0.5f, 0.f);
 
             ModelInstance mi;
-            mi.instanceWorld = Matrix::CreateTranslation(center);
+            mi.instanceWorld =
+                Matrix::CreateScale(1.f) *
+                Matrix::CreateTranslation(center);
+
+
+
+			//mi.instanceWorld += Matrix::CreateTranslation(center);
 
             m_tree.m_leaves->m_instancesCpu.push_back(mi);
             m_tree.m_trunks->m_instancesCpu.push_back(mi);
+        }
+
+        for (auto &i : m_tree.m_leaves->m_instancesCpu) {
+            i.instanceWorld = i.instanceWorld.Transpose();
+        }
+        for (auto &i : m_tree.m_trunks->m_instancesCpu) {
+            i.instanceWorld = i.instanceWorld.Transpose();
         }
 
         m_tree.m_leaves->Initialize(m_device, m_context,

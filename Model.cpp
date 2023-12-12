@@ -330,7 +330,7 @@ void Model::Render(ComPtr<ID3D11DeviceContext> &context) {
 
                 context->IASetVertexBuffers(0, 2, vertexBuffers, strides,
                                             offsets);
-
+                context->IASetInputLayout(Graphics::basicInstanceIL.Get());
                 context->DrawIndexedInstanced(mesh->indexCount, m_instanceCount,
                                               0, 0, 0);
             } else {
