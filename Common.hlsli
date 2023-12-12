@@ -138,4 +138,21 @@ struct PixelShaderInput
     float3 posModel : POSITION1; // Volume casting ½ÃÀÛÁ¡
 };
 
+struct VertexInstanceShaderInput
+{
+	float3 posModel : POSITION; //¸ðµ¨ ÁÂÇ¥°èÀÇ À§Ä¡ position
+	float3 normalModel : NORMAL; // ¸ðµ¨ ÁÂÇ¥°èÀÇ normal    
+	float2 texcoord : TEXCOORD;
+	float3 tangentModel : TANGENT;
+    
+#ifdef SKINNED
+    float4 boneWeights0 : BLENDWEIGHT0;
+    float4 boneWeights1 : BLENDWEIGHT1;
+    uint4 boneIndices0 : BLENDINDICES0;
+    uint4 boneIndices1 : BLENDINDICES1;
+#endif
+	matrix insWorld : WORLD;
+	//float dummy : COLOR;
+};
+
 #endif // __COMMON_HLSLI__

@@ -330,25 +330,64 @@ bool World::InitScene() {
     //}
 
     // Terrain_Dessert
+    //{
+
+    //    string path = basePath +
+    //    "\\Terrain\\Mountain\\3dexport_terraindesert_"
+    //                  "texture_1592143852\\";
+
+    //    auto mesh = GeometryGenerator::ReadFromFile(path,
+    //    "Terraindesert.fbx");
+
+    //    mesh[0].albedoTextureFilename = path + "Default OBJ_Base_Color.png";
+    //    // mesh.emissiveTextureFilename = "";
+    //    mesh[0].aoTextureFilename = path + "Default OBJ_Mixed_AO.png";
+    //    mesh[0].metallicTextureFilename = path + "Default OBJ_Metallic.png";
+    //    mesh[0].normalTextureFilename = path + "Default OBJ_Normal.png";
+    //    mesh[0].roughnessTextureFilename = path + "Default OBJ_Roughness.png";
+    //    mesh[0].heightTextureFilename = path + "Default OBJ_Height.png";
+
+    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+
+    //    Vector3 position = Vector3(0.0f, 0.f, 0.0f);
+    //    m_ground->UpdateWorldRow(
+    //        Matrix::CreateScale(
+    //            200.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+    //        Matrix::CreateTranslation(position));
+    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+    //    m_ground->m_isPickable = true;
+
+    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    //}
+
+    // Terrain Forest
     {
-        // https://freepbr.com/materials/stringy-marble-pbr/
-        // string basePath =
-        //    "../Assets/3DModel/club_atomic_where_the_holograms_go/";
+        string path =
+            basePath +
+            "\\Terrain\\Mountain\\3dexport_terrainforest_texture_1592143852\\";
 
-        string path = basePath + "\\Terrain\\Mountain\\3dexport_terraindesert_"
-                      "texture_1592143852\\";
+        auto terrainMeshes =
+            GeometryGenerator::ReadFromFile(path, "Terrainforest.fbx");
 
-        auto mesh = GeometryGenerator::ReadFromFile(path, "Terraindesert.fbx");
-
-        mesh[0].albedoTextureFilename = path + "Default OBJ_Base_Color.png";
+        terrainMeshes[0].albedoTextureFilename =
+            path + "Default OBJ_Base_Color.png";
         // mesh.emissiveTextureFilename = "";
-        mesh[0].aoTextureFilename = path + "Default OBJ_Mixed_AO.png";
-        mesh[0].metallicTextureFilename = path + "Default OBJ_Metallic.png";
-        mesh[0].normalTextureFilename = path + "Default OBJ_Normal.png";
-        mesh[0].roughnessTextureFilename = path + "Default OBJ_Roughness.png";
-        mesh[0].heightTextureFilename = path + "Default OBJ_Height.png";
+        terrainMeshes[0].aoTextureFilename = path + "Default OBJ_Mixed_AO.png";
+        terrainMeshes[0].metallicTextureFilename =
+            path + "Default OBJ_Metallic.png";
+        terrainMeshes[0].normalTextureFilename =
+            path + "Default OBJ_Normal.png";
+        terrainMeshes[0].roughnessTextureFilename =
+            path + "Default OBJ_Roughness.png";
+        terrainMeshes[0].heightTextureFilename =
+            path + "Default OBJ_Height.png";
 
-        m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+        m_ground =
+            make_shared<Model>(m_device, m_context, vector{terrainMeshes});
         // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
         // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
         // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
@@ -357,12 +396,77 @@ bool World::InitScene() {
         Vector3 position = Vector3(0.0f, 0.f, 0.0f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
-                200.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+                2.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-        m_ground->m_isPickable = true;
+        m_ground->m_isPickable = false;
 
         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+
+        // Tree0
+
+        path = basePath + "Foliage/Gledista_Triacanthos_FBX/";
+        auto meshes = GeometryGenerator::ReadFromFile(
+            path, "Gledista_Triacanthos_3.fbx", false);
+
+        Vector3 center(0.f);
+
+        // m_tree.m_leaves = make_shared<Model>(m_device, m_context,
+        //                                      vector{meshes[2], meshes[3]});
+        m_tree.m_leaves = make_shared<Model>();
+
+        m_tree.m_leaves->m_meshConsts.GetCpu().windTrunk = 0.1f;
+        m_tree.m_leaves->m_meshConsts.GetCpu().windLeaves = 0.01f;
+        m_tree.m_leaves->m_materialConsts.GetCpu().albedoFactor = Vector3(0.3f);
+        m_tree.m_leaves->m_materialConsts.GetCpu().roughnessFactor = 0.8f;
+        m_tree.m_leaves->m_materialConsts.GetCpu().metallicFactor = 0.2f;
+        m_tree.m_leaves->UpdateWorldRow(Matrix::CreateScale(1.0f) *
+                                        Matrix::CreateTranslation(center));
+
+        m_basicList.push_back(m_tree.m_leaves); // 리스트에 등록
+
+        // m_tree.m_trunks = make_shared<Model>(
+        //     m_device, m_context,
+        //     vector{meshes[0], meshes[1],
+        //            meshes[4]}); // Trunk and branches (4 is trunk)
+        m_tree.m_trunks = make_shared<Model>();
+
+        m_tree.m_trunks->m_meshConsts.GetCpu().windTrunk = 0.1f;
+        m_tree.m_trunks->m_meshConsts.GetCpu().windLeaves = 0.0f;
+        m_tree.m_trunks->m_materialConsts.GetCpu().albedoFactor = Vector3(1.0f);
+        m_tree.m_trunks->m_materialConsts.GetCpu().roughnessFactor = 0.8f;
+        m_tree.m_trunks->m_materialConsts.GetCpu().metallicFactor = 0.0f;
+        m_tree.m_trunks->UpdateWorldRow(Matrix::CreateScale(1.0f) *
+                                        Matrix::CreateTranslation(center));
+
+        m_basicList.push_back(m_tree.m_trunks); // 리스트에 등록
+
+        std::mt19937 gen(0);
+        std::uniform_real_distribution<float> dist(
+            0, terrainMeshes[0].vertices.size());
+
+        for (size_t i = 0; i < 2; i++) {
+            Vector3 center = Vector3(
+                terrainMeshes[0].vertices[(int)round(dist(gen))].position);
+            // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
+
+            center = Vector3::Transform(center, m_ground->m_worldRow);
+            center += Vector3(0.f, 0.5f, 0.f);
+
+            ModelInstance mi;
+            mi.instanceWorld = Matrix::CreateTranslation(center);
+
+            m_tree.m_leaves->m_instancesCpu.push_back(mi);
+            m_tree.m_trunks->m_instancesCpu.push_back(mi);
+        }
+
+        m_tree.m_leaves->Initialize(m_device, m_context,
+                                    vector{meshes[2], meshes[3]});
+        m_tree.m_trunks->Initialize(m_device, m_context,
+                                    vector{meshes[0], meshes[1], meshes[4]});
+		
+		m_tree.m_leaves->m_isPickable = true;
+        m_tree.m_trunks->m_isPickable = true;
     }
 
     // Billboard
@@ -424,6 +528,13 @@ void World::Update(float dt) {
 
         // model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
         //                       model->m_worldRow);
+    }
+
+    if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
+        D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
+                                 m_tree.m_leaves->m_instancesGpu);
+        D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
+                                 m_tree.m_trunks->m_instancesGpu);
     }
 }
 

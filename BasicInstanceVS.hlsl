@@ -3,7 +3,7 @@
 // Vertex Shader에서도 텍스춰 사용
 Texture2D g_heightTexture : register(t0);
 
-PixelShaderInput main(VertexShaderInput input)
+PixelShaderInput main(VertexInstanceShaderInput input)
 {
     // 뷰 좌표계는 NDC이기 때문에 월드 좌표를 이용해서 조명 계산
     
@@ -78,11 +78,15 @@ PixelShaderInput main(VertexShaderInput input)
 	}
     
 	output.posModel = input.posModel;
-
-	output.normalWorld = mul(float4(input.normalModel, 0.0f), worldIT).xyz;
+	output.normalWorld = mul(float4(input.normalModel, 1.f), input.insWorld).xyz;
+	output.normalWorld = mul(float4(output.normalWorld, 0.0f), worldIT).xyz;
 	output.normalWorld = normalize(output.normalWorld);
 	
-	output.posWorld = mul(float4(input.posModel, 1.0f), world).xyz;
+	// instance 추가함
+	output.posWorld = mul(float4(input.posModel, 1.f), input.insWorld).xyz;
+	output.posWorld = mul(float4(output.posWorld, 1.0f), world).xyz;
+	
+	//output.posWorld = mul(float4(input.posModel, 1.f), world).xyz;
 
 	if (useHeightMap)
 	{

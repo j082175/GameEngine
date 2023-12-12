@@ -18,6 +18,13 @@ using DirectX::BoundingSphere;
 using DirectX::SimpleMath::Vector3;
 
 class World : public AppBase {
+
+	struct Tree
+	{
+        std::shared_ptr<Model> m_leaves;
+        std::shared_ptr<Model> m_trunks;
+	};
+
   public:
     World();
 
@@ -40,6 +47,8 @@ class World : public AppBase {
     ComputePSO m_pso;
 
     Timer m_timer;
+
+	Tree m_tree;
 };
 
 } // namespace hlab

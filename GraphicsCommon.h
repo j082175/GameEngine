@@ -49,6 +49,8 @@ extern ComPtr<ID3D11VertexShader> depthOnlySkinnedVS;
 extern ComPtr<ID3D11VertexShader> grassVS;
 extern ComPtr<ID3D11VertexShader> billboardVS;
 extern ComPtr<ID3D11VertexShader> coordinateVS;
+extern ComPtr<ID3D11VertexShader> basicInstanceVS;
+
 extern ComPtr<ID3D11PixelShader> basicPS;
 extern ComPtr<ID3D11PixelShader> skyboxPS;
 extern ComPtr<ID3D11PixelShader> combinePS;
@@ -64,6 +66,7 @@ extern ComPtr<ID3D11PixelShader> volumetricFirePS;
 extern ComPtr<ID3D11PixelShader> gameExplosionPS;
 extern ComPtr<ID3D11PixelShader> billboardPS;
 extern ComPtr<ID3D11PixelShader> coordinatePS;
+
 extern ComPtr<ID3D11GeometryShader> normalGS;
 extern ComPtr<ID3D11GeometryShader> billboardGS;
 extern ComPtr<ID3D11GeometryShader> coordinateGS;
@@ -76,6 +79,7 @@ extern ComPtr<ID3D11InputLayout> skyboxIL;
 extern ComPtr<ID3D11InputLayout> postProcessingIL;
 extern ComPtr<ID3D11InputLayout> grassIL;
 extern ComPtr<ID3D11InputLayout> billboardIL;
+extern ComPtr<ID3D11InputLayout> basicInstanceIL;
 
 // Blend States
 extern ComPtr<ID3D11BlendState> mirrorBS;
@@ -112,6 +116,8 @@ extern GraphicsPSO billboardSolidPSO;
 extern GraphicsPSO billboardWirePSO;
 extern GraphicsPSO reflectBillboardSolidPSO;
 extern GraphicsPSO reflectBillboardWirePSO;
+extern GraphicsPSO defaultInstanceSolidPSO;
+extern GraphicsPSO defaultInstanceWirePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 extern GraphicsPSO volumeSmokePSO;

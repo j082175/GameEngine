@@ -76,6 +76,10 @@ class Model {
 
     string m_name = "NoName";
 
+    UINT m_instanceCount = 1;
+    vector<ModelInstance> m_instancesCpu;
+    ComPtr<ID3D11Buffer> m_instancesGpu;
+
   private:
     shared_ptr<Mesh> m_boundingBoxMesh;
     shared_ptr<Mesh> m_boundingSphereMesh;

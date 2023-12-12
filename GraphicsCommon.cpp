@@ -46,6 +46,7 @@ ComPtr<ID3D11VertexShader> depthOnlySkinnedVS;
 ComPtr<ID3D11VertexShader> grassVS;
 ComPtr<ID3D11VertexShader> billboardVS;
 ComPtr<ID3D11VertexShader> coordinateVS;
+ComPtr<ID3D11VertexShader> basicInstanceVS;
 
 ComPtr<ID3D11PixelShader> basicPS;
 ComPtr<ID3D11PixelShader> skyboxPS;
@@ -76,6 +77,7 @@ ComPtr<ID3D11InputLayout> skyboxIL;
 ComPtr<ID3D11InputLayout> postProcessingIL;
 ComPtr<ID3D11InputLayout> grassIL;     // PER_INSTANCE 사용
 ComPtr<ID3D11InputLayout> billboardIL; // PER_INSTANCE 사용
+ComPtr<ID3D11InputLayout> basicInstanceIL;
 
 // Graphics Pipeline States
 GraphicsPSO defaultSolidPSO;
@@ -107,6 +109,8 @@ GraphicsPSO billboardSolidPSO;
 GraphicsPSO billboardWirePSO;
 GraphicsPSO reflectBillboardSolidPSO;
 GraphicsPSO reflectBillboardWirePSO;
+GraphicsPSO defaultInstanceSolidPSO;
+GraphicsPSO defaultInstanceWirePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -431,6 +435,8 @@ void Graphics::InitShaders(ComPtr<ID3D11Device> &device) {
          D3D11_INPUT_PER_VERTEX_DATA, 0},
         {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24,
          D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
 
         // 행렬 하나는 4x4라서 Element 4개 사용 (쉐이더에서는 행렬 하나)
         {"WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, // Slot 1, 0부터 시작
@@ -443,6 +449,27 @@ void Graphics::InitShaders(ComPtr<ID3D11Device> &device) {
          D3D11_INPUT_PER_INSTANCE_DATA, 1}, // 마지막 1은 instance step
         {"COLOR", 0, DXGI_FORMAT_R32_FLOAT, 1, 64,
          D3D11_INPUT_PER_INSTANCE_DATA, 1}};
+
+    vector<D3D11_INPUT_ELEMENT_DESC> basicInstanceIEs = {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, // Slot 0, 0부터 시작
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+        // 행렬 하나는 4x4라서 Element 4개 사용 (쉐이더에서는 행렬 하나)
+        {"WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, // Slot 1, 0부터 시작
+         D3D11_INPUT_PER_INSTANCE_DATA, 1}, // 마지막 1은 instance step
+        {"WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16,
+         D3D11_INPUT_PER_INSTANCE_DATA, 1}, // 마지막 1은 instance step
+        {"WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32,
+         D3D11_INPUT_PER_INSTANCE_DATA, 1}, // 마지막 1은 instance step
+        {"WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48,
+         D3D11_INPUT_PER_INSTANCE_DATA, 1} // 마지막 1은 instance step
+    };
 
     vector<D3D11_INPUT_ELEMENT_DESC> billboardIEs = {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, // Vector4
@@ -470,6 +497,10 @@ void Graphics::InitShaders(ComPtr<ID3D11Device> &device) {
         device, L"BillboardVS.hlsl", billboardIEs, billboardVS, billboardIL);
     D3D11Utils::CreateVertexShaderAndInputLayout(
         device, L"CoordinateVS.hlsl", basicIEs, coordinateVS, basicIL);
+
+    D3D11Utils::CreateVertexShaderAndInputLayout(
+        device, L"BasicInstanceVS.hlsl", basicInstanceIEs, basicInstanceVS,
+        basicInstanceIL);
 
     D3D11Utils::CreatePixelShader(device, L"BasicPS.hlsl", basicPS);
     D3D11Utils::CreatePixelShader(device, L"NormalPS.hlsl", normalPS);
@@ -651,6 +682,14 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
 
     reflectBillboardWirePSO = reflectBillboardSolidPSO;
     reflectBillboardWirePSO.m_rasterizerState = wireBothRS;
+
+	defaultInstanceSolidPSO = defaultSolidPSO;
+    defaultInstanceSolidPSO.m_vertexShader = basicInstanceVS;
+    defaultInstanceSolidPSO.m_inputLayout = basicInstanceIL;
+
+	defaultInstanceWirePSO = defaultWirePSO;
+    defaultInstanceWirePSO.m_vertexShader = basicInstanceVS;
+    defaultInstanceWirePSO.m_inputLayout = basicInstanceIL;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

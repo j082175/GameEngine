@@ -220,8 +220,8 @@ void Model::Initialize(ComPtr<ID3D11Device> &device,
         m_boundingBoxMesh->stride = UINT(sizeof(Vertex));
         D3D11Utils::CreateIndexBuffer(device, meshData.indices,
                                       m_boundingBoxMesh->indexBuffer);
-        //m_boundingBoxMesh->meshConstsGPU = m_meshConsts.Get();
-        //m_boundingBoxMesh->materialConstsGPU = m_materialConsts.Get();
+        // m_boundingBoxMesh->meshConstsGPU = m_meshConsts.Get();
+        // m_boundingBoxMesh->materialConstsGPU = m_materialConsts.Get();
     }
 
     // Initialize Bounding Sphere
@@ -246,8 +246,16 @@ void Model::Initialize(ComPtr<ID3D11Device> &device,
         m_boundingSphereMesh->stride = UINT(sizeof(Vertex));
         D3D11Utils::CreateIndexBuffer(device, meshData.indices,
                                       m_boundingSphereMesh->indexBuffer);
-        //m_boundingSphereMesh->meshConstsGPU = m_meshConsts.Get();
-        //m_boundingSphereMesh->materialConstsGPU = m_materialConsts.Get();
+        // m_boundingSphereMesh->meshConstsGPU = m_meshConsts.Get();
+        // m_boundingSphereMesh->materialConstsGPU = m_materialConsts.Get();
+    }
+
+    // assert(m_instancesCpu.size() > 0);
+
+    if (m_instancesCpu.size() > 0) {
+        m_instanceCount = UINT(m_instancesCpu.size());
+        D3D11Utils::CreateInstanceBuffer(device, m_instancesCpu,
+                                         m_instancesGpu);
     }
 }
 
@@ -260,7 +268,17 @@ void Model::UpdateConstantBuffers(ComPtr<ID3D11Device> &device,
 }
 
 GraphicsPSO &Model::GetPSO(const bool wired) {
-    return wired ? Graphics::defaultWirePSO : Graphics::defaultSolidPSO;
+
+	bool isInstance = false;
+	if (m_instancesCpu.size() > 1) {
+        isInstance = true;
+    }
+
+    if (isInstance) {
+        return wired ? Graphics::defaultInstanceWirePSO : Graphics::defaultInstanceSolidPSO;
+    } else {
+        return wired ? Graphics::defaultWirePSO : Graphics::defaultSolidPSO;
+    }
 }
 
 GraphicsPSO &Model::GetDepthOnlyPSO() { return Graphics::depthOnlyPSO; }
@@ -299,11 +317,28 @@ void Model::Render(ComPtr<ID3D11DeviceContext> &context) {
                 context->PSSetShaderResources(
                     6, 1, mesh->lightingTex.GetAddressOfSRV());
 
-            context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
-                                        &mesh->stride, &mesh->offset);
             context->IASetIndexBuffer(mesh->indexBuffer.Get(),
                                       DXGI_FORMAT_R32_UINT, 0);
-            context->DrawIndexed(mesh->indexCount, 0, 0);
+
+            if (m_instanceCount > 1) {
+
+                ID3D11Buffer *const vertexBuffers[2] = {
+                    mesh->vertexBuffer.Get(), m_instancesGpu.Get()};
+                const UINT strides[2] = {sizeof(Vertex),
+                                         sizeof(ModelInstance)};
+                const UINT offsets[2] = {0, 0};
+
+                context->IASetVertexBuffers(0, 2, vertexBuffers, strides,
+                                            offsets);
+
+                context->DrawIndexedInstanced(mesh->indexCount, m_instanceCount,
+                                              0, 0, 0);
+            } else {
+                context->IASetVertexBuffers(0, 1,
+                                            mesh->vertexBuffer.GetAddressOf(),
+                                            &mesh->stride, &mesh->offset);
+                context->DrawIndexed(mesh->indexCount, 0, 0);
+            }
 
             // Release resources
             ID3D11ShaderResourceView *nulls[3] = {NULL, NULL, NULL};
@@ -336,13 +371,11 @@ void Model::RenderNormals(ComPtr<ID3D11DeviceContext> &context) {
 }
 
 void Model::RenderWireBoundingBox(ComPtr<ID3D11DeviceContext> &context) {
-    //ID3D11Buffer *constBuffers[2] = {
-    //    m_boundingBoxMesh->meshConstsGPU.Get(),
-    //    m_boundingBoxMesh->materialConstsGPU.Get()};
-    ID3D11Buffer *constBuffers[2] = {
-        m_meshConsts.Get(),
-        m_materialConsts.Get()};
-
+    // ID3D11Buffer *constBuffers[2] = {
+    //     m_boundingBoxMesh->meshConstsGPU.Get(),
+    //     m_boundingBoxMesh->materialConstsGPU.Get()};
+    ID3D11Buffer *constBuffers[2] = {m_meshConsts.Get(),
+                                     m_materialConsts.Get()};
 
     context->VSSetConstantBuffers(1, 2, constBuffers);
     context->IASetVertexBuffers(
@@ -354,12 +387,11 @@ void Model::RenderWireBoundingBox(ComPtr<ID3D11DeviceContext> &context) {
 }
 
 void Model::RenderWireBoundingSphere(ComPtr<ID3D11DeviceContext> &context) {
-    //ID3D11Buffer *constBuffers[2] = {
-    //    m_boundingBoxMesh->meshConstsGPU.Get(),
-    //    m_boundingBoxMesh->materialConstsGPU.Get()};
-    ID3D11Buffer *constBuffers[2] = {
-        m_meshConsts.Get(),
-        m_materialConsts.Get()};
+    // ID3D11Buffer *constBuffers[2] = {
+    //     m_boundingBoxMesh->meshConstsGPU.Get(),
+    //     m_boundingBoxMesh->materialConstsGPU.Get()};
+    ID3D11Buffer *constBuffers[2] = {m_meshConsts.Get(),
+                                     m_materialConsts.Get()};
 
     context->VSSetConstantBuffers(1, 2, constBuffers);
     context->IASetVertexBuffers(

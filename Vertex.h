@@ -45,4 +45,9 @@ struct GrassInstance {
     float windStrength;
 };
 
+struct ModelInstance {
+    Matrix instanceWorld = Matrix();
+};
+static_assert(sizeof(ModelInstance) % 16 == 0);
+
 } // namespace hlab
