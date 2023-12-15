@@ -447,7 +447,7 @@ bool World::InitScene() {
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
-        for (size_t i = 0; i < 2; i++) {
+        for (size_t i = 0; i < 10; i++) {
             Vector3 center = Vector3(
                 terrainMeshes[0].vertices[(int)round(dist(gen))].position);
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
@@ -458,21 +458,10 @@ bool World::InitScene() {
             ModelInstance mi;
             mi.instanceWorld =
                 Matrix::CreateScale(1.f) *
-                Matrix::CreateTranslation(center);
-
-
-
-			//mi.instanceWorld += Matrix::CreateTranslation(center);
+                Matrix::CreateTranslation(center).Transpose();
 
             m_tree.m_leaves->m_instancesCpu.push_back(mi);
             m_tree.m_trunks->m_instancesCpu.push_back(mi);
-        }
-
-        for (auto &i : m_tree.m_leaves->m_instancesCpu) {
-            i.instanceWorld = i.instanceWorld.Transpose();
-        }
-        for (auto &i : m_tree.m_trunks->m_instancesCpu) {
-            i.instanceWorld = i.instanceWorld.Transpose();
         }
 
         m_tree.m_leaves->Initialize(m_device, m_context,
@@ -480,8 +469,8 @@ bool World::InitScene() {
         m_tree.m_trunks->Initialize(m_device, m_context,
                                     vector{meshes[0], meshes[1], meshes[4]});
 
-        m_tree.m_leaves->m_isPickable = true;
-        m_tree.m_trunks->m_isPickable = true;
+        m_tree.m_leaves->m_isPickable = false;
+        m_tree.m_trunks->m_isPickable = false;
 
         if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
             D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
@@ -552,12 +541,12 @@ void World::Update(float dt) {
         //                       model->m_worldRow);
     }
 
-    if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
-        D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
-                                 m_tree.m_leaves->m_instancesGpu);
-        D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
-                                 m_tree.m_trunks->m_instancesGpu);
-    }
+    //if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
+    //    D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
+    //                             m_tree.m_leaves->m_instancesGpu);
+    //    D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
+    //                             m_tree.m_trunks->m_instancesGpu);
+    //}
 }
 
 void World::Render() {

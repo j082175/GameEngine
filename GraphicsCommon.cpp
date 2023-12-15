@@ -111,6 +111,8 @@ GraphicsPSO reflectBillboardSolidPSO;
 GraphicsPSO reflectBillboardWirePSO;
 GraphicsPSO defaultInstanceSolidPSO;
 GraphicsPSO defaultInstanceWirePSO;
+GraphicsPSO reflectInstanceSolidPSO;
+GraphicsPSO reflectInstanceWirePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -683,13 +685,24 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     reflectBillboardWirePSO = reflectBillboardSolidPSO;
     reflectBillboardWirePSO.m_rasterizerState = wireBothRS;
 
-	defaultInstanceSolidPSO = defaultSolidPSO;
+    defaultInstanceSolidPSO = defaultSolidPSO;
     defaultInstanceSolidPSO.m_vertexShader = basicInstanceVS;
     defaultInstanceSolidPSO.m_inputLayout = basicInstanceIL;
 
-	defaultInstanceWirePSO = defaultWirePSO;
+    defaultInstanceWirePSO = defaultWirePSO;
     defaultInstanceWirePSO.m_vertexShader = basicInstanceVS;
     defaultInstanceWirePSO.m_inputLayout = basicInstanceIL;
+
+    // reflectSolidPSO: 반사되면 Winding 반대
+    reflectInstanceSolidPSO = defaultSolidPSO;
+    reflectInstanceSolidPSO.m_depthStencilState = drawMaskedDSS;
+    reflectInstanceSolidPSO.m_rasterizerState = solidCcwRS; // 반시계
+    reflectInstanceSolidPSO.m_stencilRef = 1;
+
+    // reflectWirePSO: 반사되면 Winding 반대
+    reflectInstanceWirePSO = reflectSolidPSO;
+    reflectInstanceWirePSO.m_rasterizerState = wireCcwRS; // 반시계
+    reflectInstanceWirePSO.m_stencilRef = 1;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

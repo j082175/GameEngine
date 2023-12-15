@@ -118,6 +118,8 @@ extern GraphicsPSO reflectBillboardSolidPSO;
 extern GraphicsPSO reflectBillboardWirePSO;
 extern GraphicsPSO defaultInstanceSolidPSO;
 extern GraphicsPSO defaultInstanceWirePSO;
+extern GraphicsPSO reflectInstanceSolidPSO;
+extern GraphicsPSO reflectInstanceWirePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 extern GraphicsPSO volumeSmokePSO;
