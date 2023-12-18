@@ -19,9 +19,6 @@ World::World() : AppBase() {}
 
 bool World::InitScene() {
 
-    string basePath =
-        "C:\\Users\\aa\\Documents\\Google Drive\\Graphics Assets\\Assets\\";
-
     AppBase::m_camera.Reset(Vector3(-0.112852f, 0.307729f, -0.542159f),
                             0.0589047f, 0.14399f);
     AppBase::m_globalConstsCPU.strengthIBL = 0.1f;
@@ -396,12 +393,12 @@ bool World::InitScene() {
         Vector3 position = Vector3(0.0f, 0.f, 0.0f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
-                10.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+                5.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = false;
 
-        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+        //m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
 
         // Tree0
 
@@ -409,7 +406,7 @@ bool World::InitScene() {
         auto meshes = GeometryGenerator::ReadFromFile(
             path, "Gledista_Triacanthos_3.fbx", false);
 
-        Vector3 center(0.f);
+        Vector3 center(10.f);
 
         // m_tree.m_leaves = make_shared<Model>(m_device, m_context,
         //                                      vector{meshes[2], meshes[3]});
@@ -422,7 +419,7 @@ bool World::InitScene() {
         m_tree.m_leaves->m_materialConsts.GetCpu().metallicFactor = 0.2f;
         m_tree.m_leaves->UpdateWorldRow(Matrix::CreateScale(1.0f) *
                                         Matrix::CreateTranslation(center));
-        //m_tree.m_leaves->m_isPickable = true;
+         m_tree.m_leaves->m_isPickable = true;
 
         m_basicList.push_back(m_tree.m_leaves); // 리스트에 등록
 
@@ -439,7 +436,7 @@ bool World::InitScene() {
         m_tree.m_trunks->m_materialConsts.GetCpu().metallicFactor = 0.0f;
         m_tree.m_trunks->UpdateWorldRow(Matrix::CreateScale(1.0f) *
                                         Matrix::CreateTranslation(center));
-        //m_tree.m_trunks->m_isPickable = true;
+         m_tree.m_trunks->m_isPickable = true;
 
         m_basicList.push_back(m_tree.m_trunks); // 리스트에 등록
 
@@ -447,7 +444,7 @@ bool World::InitScene() {
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
-        for (size_t i = 0; i < 10; i++) {
+        for (size_t i = 0; i < 2; i++) {
             Vector3 center = Vector3(
                 terrainMeshes[0].vertices[(int)round(dist(gen))].position);
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
@@ -456,9 +453,8 @@ bool World::InitScene() {
             center += 1.f * Vector3(0.f, 0.5f, 0.f);
 
             ModelInstance mi;
-            mi.instanceWorld =
-                Matrix::CreateScale(1.f) *
-                Matrix::CreateTranslation(center).Transpose();
+            mi.instanceWorld = Matrix::CreateScale(1.f) *
+                               Matrix::CreateTranslation(center).Transpose();
 
             m_tree.m_leaves->m_instancesCpu.push_back(mi);
             m_tree.m_trunks->m_instancesCpu.push_back(mi);
@@ -541,12 +537,12 @@ void World::Update(float dt) {
         //                       model->m_worldRow);
     }
 
-    //if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
-    //    D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
-    //                             m_tree.m_leaves->m_instancesGpu);
-    //    D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
-    //                             m_tree.m_trunks->m_instancesGpu);
-    //}
+    // if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
+    //     D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
+    //                              m_tree.m_leaves->m_instancesGpu);
+    //     D3D11Utils::UpdateBuffer(m_context, m_tree.m_trunks->m_instancesCpu,
+    //                              m_tree.m_trunks->m_instancesGpu);
+    // }
 }
 
 void World::Render() {

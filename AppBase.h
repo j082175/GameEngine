@@ -206,6 +206,9 @@ class AppBase {
     std::shared_ptr<Model> m_coordinate;
 
     bool m_coordinateCheck = true;
+
+    string basePath =
+        "C:\\Users\\aa\\Documents\\Google Drive\\Graphics Assets\\Assets\\";
 };
 
 } // namespace hlab

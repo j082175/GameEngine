@@ -20,7 +20,6 @@ Party::Party() : AppBase() {}
 
 bool Party::InitScene() {
 
-	string basePath = "C:\\Users\\aa\\Documents\\Google Drive\\Graphics Assets\\Assets\\";
 
     AppBase::m_globalConstsCPU.strengthIBL = 1.0f;
 
