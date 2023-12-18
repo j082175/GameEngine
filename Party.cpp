@@ -496,7 +496,7 @@ bool Party::InitScene() {
 
     // Eve
     //{
-    //    string path = "../Assets/Characters/Eve/";
+    //    string path = basePath + "Characters/Eve/";
     //    vector<string> clipNames = {"Dancing Maraschino Step.fbx"};
 
     //    AnimationData aniData;
@@ -913,8 +913,9 @@ void Party::UpdateAnimationDance(
     const std::shared_ptr<SkinnedMeshModel> &character, float dt,
     float &frameCount, int &state, bool &isRun) {
 
-    // std::cout << state << '\n';
-    // std::cout << frameCount << '\n';
+     //std::cout << state << '\n';
+     //std::cout << frameCount << '\n';
+     //std::cout << dt << '\n';
 
     if (state == 0) { // 정지 상태
         // TODO:
@@ -944,7 +945,7 @@ void Party::UpdateAnimationDance(
 
     character->UpdateAnimation(m_context, state, frameCount);
 
-    frameCount += 0.5f;
+    frameCount += 60.f * dt;
 }
 
 void Party::UpdateGUI() {

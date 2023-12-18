@@ -27,7 +27,7 @@ __declspec(align(256)) struct MeshConstants {
     Matrix worldInv;
     int useHeightMap = 0;
     float heightScale = 0.0f;
-    float windTrunk = 0.0f;
+    float windTrunk = 0.f;
     float windLeaves = 0.0f;
 };
 
