@@ -1,6 +1,6 @@
 #include "Common.hlsli" // 쉐이더에서도 include 사용 가능
 
-float4 main(VertexInstanceShaderInput input) : SV_POSITION
+float4 main(VertexShaderInput input) : SV_POSITION
 {
     
 #ifdef SKINNED
