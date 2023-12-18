@@ -282,7 +282,14 @@ GraphicsPSO &Model::GetPSO(const bool wired) {
     }
 }
 
-GraphicsPSO &Model::GetDepthOnlyPSO() { return Graphics::depthOnlyPSO; }
+GraphicsPSO &Model::GetDepthOnlyPSO() {
+
+    if (m_instanceCount > 1) {
+        return Graphics::depthOnlyInstancePSO;
+    } else {
+        return Graphics::depthOnlyPSO;
+    }
+}
 
 GraphicsPSO &Model::GetReflectPSO(const bool wired) {
 

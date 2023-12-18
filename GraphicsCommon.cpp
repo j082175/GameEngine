@@ -47,6 +47,7 @@ ComPtr<ID3D11VertexShader> grassVS;
 ComPtr<ID3D11VertexShader> billboardVS;
 ComPtr<ID3D11VertexShader> coordinateVS;
 ComPtr<ID3D11VertexShader> basicInstanceVS;
+ComPtr<ID3D11VertexShader> depthOnlyInstanceVS;
 
 ComPtr<ID3D11PixelShader> basicPS;
 ComPtr<ID3D11PixelShader> skyboxPS;
@@ -113,6 +114,7 @@ GraphicsPSO defaultInstanceSolidPSO;
 GraphicsPSO defaultInstanceWirePSO;
 GraphicsPSO reflectInstanceSolidPSO;
 GraphicsPSO reflectInstanceWirePSO;
+GraphicsPSO depthOnlyInstancePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 GraphicsPSO volumeSmokePSO;
@@ -504,6 +506,10 @@ void Graphics::InitShaders(ComPtr<ID3D11Device> &device) {
         device, L"BasicInstanceVS.hlsl", basicInstanceIEs, basicInstanceVS,
         basicInstanceIL);
 
+	D3D11Utils::CreateVertexShaderAndInputLayout(
+        device, L"DepthOnlyInstanceVS.hlsl", basicInstanceIEs,
+        depthOnlyInstanceVS, basicInstanceIL);
+
     D3D11Utils::CreatePixelShader(device, L"BasicPS.hlsl", basicPS);
     D3D11Utils::CreatePixelShader(device, L"NormalPS.hlsl", normalPS);
     D3D11Utils::CreatePixelShader(device, L"SkyboxPS.hlsl", skyboxPS);
@@ -694,15 +700,19 @@ void Graphics::InitPipelineStates(ComPtr<ID3D11Device> &device) {
     defaultInstanceWirePSO.m_inputLayout = basicInstanceIL;
 
     // reflectSolidPSO: 반사되면 Winding 반대
-    reflectInstanceSolidPSO = defaultSolidPSO;
+    reflectInstanceSolidPSO = defaultInstanceSolidPSO;
     reflectInstanceSolidPSO.m_depthStencilState = drawMaskedDSS;
     reflectInstanceSolidPSO.m_rasterizerState = solidCcwRS; // 반시계
     reflectInstanceSolidPSO.m_stencilRef = 1;
 
     // reflectWirePSO: 반사되면 Winding 반대
-    reflectInstanceWirePSO = reflectSolidPSO;
+    reflectInstanceWirePSO = reflectInstanceSolidPSO;
     reflectInstanceWirePSO.m_rasterizerState = wireCcwRS; // 반시계
     reflectInstanceWirePSO.m_stencilRef = 1;
+
+	depthOnlyInstancePSO = depthOnlyPSO;
+    depthOnlyInstancePSO.m_inputLayout = basicInstanceIL;
+    depthOnlyInstancePSO.m_vertexShader = depthOnlyInstanceVS;
 }
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화하는 쉐이더

@@ -159,7 +159,7 @@ bool AppBase::InitScene() {
         m_globalConstsCPU.lights[0].radius = 0.04f;
         m_globalConstsCPU.lights[0].type =
             LIGHT_POINT | LIGHT_SHADOW; // Point with shadow
-        // m_globalConstsCPU.lights[0].type = LIGHT_OFF;
+         //m_globalConstsCPU.lights[0].type = LIGHT_OFF;
 
         // 조명 1의 위치와 방향은 Update()에서 설정
         m_globalConstsCPU.lights[1].radiance = Vector3(5.0f);
@@ -168,6 +168,7 @@ bool AppBase::InitScene() {
         m_globalConstsCPU.lights[1].radius = 0.02f;
         m_globalConstsCPU.lights[1].type =
             LIGHT_SPOT | LIGHT_SHADOW; // Point with shadow
+        m_globalConstsCPU.lights[1].type = LIGHT_OFF;
 
         // 조명 2는 꺼놓음
         m_globalConstsCPU.lights[2].type = LIGHT_OFF;
@@ -279,15 +280,17 @@ void AppBase::UpdateLights(float dt) {
     }
     m_globalConstsCPU.lights[1].position = Vector3(0.0f, 1.1f, 2.0f) + lightDev;
     Vector3 focusPosition = Vector3(0.0f, -0.5f, 1.7f);
-    // Vector3 focusPosition =
-    //     m_basicListMap.find("MainSphere")->second->m_worldRow.Translation();
-    // m_globalConstsCPU.lights[1].direction =
-    //     focusPosition - m_globalConstsCPU.lights[1].position;
-    // m_globalConstsCPU.lights[1].direction.Normalize();
 
-    // m_globalConstsCPU.lights[0].direction =
-    //     focusPosition - m_globalConstsCPU.lights[0].position;
-    // m_globalConstsCPU.lights[0].direction.Normalize();
+     //Vector3 focusPosition =
+     //    m_basicListMap.find("MainSphere")->second->m_worldRow.Translation();
+
+     m_globalConstsCPU.lights[1].direction =
+         focusPosition - m_globalConstsCPU.lights[1].position;
+     m_globalConstsCPU.lights[1].direction.Normalize();
+
+     //m_globalConstsCPU.lights[0].direction =
+     //    focusPosition - m_globalConstsCPU.lights[0].position;
+     //m_globalConstsCPU.lights[0].direction.Normalize();
 
     // focusPosition =
     //     m_basicListMap.find("SecondSphere")->second->m_worldRow.Translation();
@@ -374,6 +377,7 @@ void AppBase::RenderDepthOnly() {
     // if (m_mirror)
     //     m_mirror->Render(m_context);
     for (auto &i : m_mirrorList) {
+        AppBase::SetPipelineState(i.first->GetDepthOnlyPSO());
         i.first->Render(m_context);
     }
 }
@@ -405,6 +409,7 @@ void AppBase::RenderShadowMaps() {
             if (!m_mirrorList.empty()) {
                 for (auto &i : m_mirrorList) {
                     if (i.first->m_castShadow) {
+                        AppBase::SetPipelineState(i.first->GetDepthOnlyPSO());
                         i.first->Render(m_context);
                     }
                 }

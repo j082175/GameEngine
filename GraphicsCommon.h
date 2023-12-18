@@ -50,6 +50,7 @@ extern ComPtr<ID3D11VertexShader> grassVS;
 extern ComPtr<ID3D11VertexShader> billboardVS;
 extern ComPtr<ID3D11VertexShader> coordinateVS;
 extern ComPtr<ID3D11VertexShader> basicInstanceVS;
+extern ComPtr<ID3D11VertexShader> depthOnlyInstanceVS;
 
 extern ComPtr<ID3D11PixelShader> basicPS;
 extern ComPtr<ID3D11PixelShader> skyboxPS;
@@ -120,6 +121,7 @@ extern GraphicsPSO defaultInstanceSolidPSO;
 extern GraphicsPSO defaultInstanceWirePSO;
 extern GraphicsPSO reflectInstanceSolidPSO;
 extern GraphicsPSO reflectInstanceWirePSO;
+extern GraphicsPSO depthOnlyInstancePSO;
 
 // 주의: 초기화가 느려서 필요한 경우에만 초기화
 extern GraphicsPSO volumeSmokePSO;

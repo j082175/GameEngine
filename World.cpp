@@ -444,7 +444,7 @@ bool World::InitScene() {
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
-        for (size_t i = 0; i < 2; i++) {
+        for (size_t i = 0; i < 5; i++) {
             Vector3 center = Vector3(
                 terrainMeshes[0].vertices[(int)round(dist(gen))].position);
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
