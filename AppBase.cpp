@@ -153,7 +153,7 @@ bool AppBase::InitScene() {
     {
         // 조명 0은 고정
         m_globalConstsCPU.lights[0].radiance = Vector3(5.0f);
-        m_globalConstsCPU.lights[0].position = Vector3(0.0f, 4.5f, 1.1f);
+        m_globalConstsCPU.lights[0].position = Vector3(0.0f, 10.5f, 1.1f);
         m_globalConstsCPU.lights[0].direction = Vector3(0.0f, -1.0f, 0.0f);
         m_globalConstsCPU.lights[0].spotPower = 3.0f;
         m_globalConstsCPU.lights[0].radius = 0.04f;
@@ -568,7 +568,7 @@ void AppBase::Render() {
         RenderMirror(i.first);
     }
 
-    //RenderCoordinateView();
+    RenderCoordinateView();
 
     PostRender();
 }
