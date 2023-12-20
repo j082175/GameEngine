@@ -289,6 +289,7 @@ GraphicsPSO &Model::GetDepthOnlyPSO() {
     } else {
         return Graphics::depthOnlyPSO;
     }
+
 }
 
 GraphicsPSO &Model::GetReflectPSO(const bool wired) {
@@ -299,6 +300,7 @@ GraphicsPSO &Model::GetReflectPSO(const bool wired) {
     } else {
         return wired ? Graphics::reflectWirePSO : Graphics::reflectSolidPSO;
     }
+
 }
 
 void Model::Render(ComPtr<ID3D11DeviceContext> &context) {

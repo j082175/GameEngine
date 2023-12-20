@@ -59,7 +59,7 @@ bool World::InitScene() {
         m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
         m_ground->m_name = "Ground";
 
-        Vector3 position = Vector3(0.0f, -0.5f, 2.0f);
+        Vector3 position = Vector3(0.0f, -0.5f - 10.f, 2.0f);
         m_ground->UpdateWorldRow(Matrix::CreateRotationX(3.141592f * 0.5f) *
                                  Matrix::CreateTranslation(position));
 
@@ -67,7 +67,7 @@ bool World::InitScene() {
         // 0.0f)); m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
         std::shared_ptr<Plane> mirrorPlane =
-            std::make_shared<Plane>(position, Vector3(0.0f, 1.0f, 0.0f));
+            std::make_shared<Plane>(position, Vector3(0.0f, -1.0f, 0.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
         m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
@@ -365,10 +365,10 @@ bool World::InitScene() {
     {
         string path =
             basePath +
-            "\\Terrain\\Mountain\\3dexport_terrainforest_texture_1592143852\\";
+            "\\Terrain\\Mountain\\3dexport_terrainwinter1_texture_1592143852\\";
 
         auto terrainMeshes =
-            GeometryGenerator::ReadFromFile(path, "Terrainforest.fbx");
+            GeometryGenerator::ReadFromFile(path, "Terrainwinter1.fbx");
 
         terrainMeshes[0].albedoTextureFilename =
             path + "Default OBJ_Base_Color.png";
@@ -385,20 +385,20 @@ bool World::InitScene() {
 
         m_ground =
             make_shared<Model>(m_device, m_context, vector{terrainMeshes});
-        // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-        // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-        // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-        // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+         //m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+         m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
+         //m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+         //m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
         Vector3 position = Vector3(0.0f, 0.f, 0.0f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
-                10.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+                100.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-        m_ground->m_isPickable = false;
+        m_ground->m_isPickable = true;
 
-         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
 
         // Tree0
 
@@ -444,7 +444,7 @@ bool World::InitScene() {
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
-        for (size_t i = 0; i < 2; i++) {
+        for (size_t i = 0; i < 1; i++) {
             Vector3 center = Vector3(
                 terrainMeshes[0].vertices[(int)round(dist(gen))].position);
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
@@ -453,8 +453,9 @@ bool World::InitScene() {
             center += 1.f * Vector3(0.f, 0.5f, 0.f);
 
             ModelInstance mi;
-            mi.instanceWorld = Matrix::CreateScale(2.f) *
-                               Matrix::CreateTranslation(center).Transpose();
+            mi.instanceWorld =
+                (Matrix::CreateScale(1.f) * Matrix::CreateTranslation(center))
+                    .Transpose();
 
             m_tree.m_leaves->m_instancesCpu.push_back(mi);
             m_tree.m_trunks->m_instancesCpu.push_back(mi);
@@ -488,6 +489,42 @@ bool World::InitScene() {
 
         m_billboard = std::make_shared<BillboardModel>();
         m_billboard->Initialize(m_device, m_context, points, width, NULL);
+    }
+
+    // Sun
+    {
+        MeshData mesh = GeometryGenerator::MakeSphere(0.1f, 20, 20);
+        string basePath = "..\\Assets\\Textures\\";
+        mesh.albedoTextureFilename = basePath + "blender_uv_grid_2k.png";
+        //Vector3 center(-5.0f, 5.f, 5.f);
+        Vector3 center(0.f, 5.f, 0.f);
+        auto newModel = make_shared<Model>(m_device, m_context, vector{mesh});
+        newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
+        //newModel->m_materialConsts.GetCpu().albedoFactor =
+        //    Vector3(1.0f, 1.f, 1.f);
+        //newModel->m_materialConsts.GetCpu().roughnessFactor = 0.f;
+        //newModel->m_materialConsts.GetCpu().metallicFactor = 0.f;
+        newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.3f);
+        newModel->UpdateConstantBuffers(m_device, m_context);
+        newModel->m_isPickable = true; // 마우스로 선택/이동 가능
+        newModel->m_name = "Sun";
+        m_basicList.push_back(newModel);
+        m_basicListMap.insert(std::make_pair(newModel->m_name, newModel));
+
+        // Directional Light
+        m_globalConstsCPU.lights[0].radiance = Vector3(5.0f);
+        m_globalConstsCPU.lights[0].position = center;
+        //m_globalConstsCPU.lights[0].direction =
+        //    Vector3(0.f, 0.f, 0.f) - m_globalConstsCPU.lights[0].position;
+        //m_globalConstsCPU.lights[0].direction.Normalize();
+        m_globalConstsCPU.lights[0].direction = Vector3(0.f, -1.f, 0.f);
+
+        m_globalConstsCPU.lights[0].spotPower = 3.0f;
+        m_globalConstsCPU.lights[0].radius = 0.04f;
+        m_globalConstsCPU.lights[0].type =
+            LIGHT_SPOT | LIGHT_SHADOW; // Point with shadow
+        //m_globalConstsCPU.lights[0].fallOffEnd = 200.f;
+        // m_globalConstsCPU.lights[0].type = LIGHT_OFF;
     }
 
     ComPtr<ID3D11Texture2D> backBuffer;
@@ -526,27 +563,29 @@ void World::Update(float dt) {
         // iter->second->UpdateConstantBuffers(m_device, m_context);
     }
 
-    //iter = m_basicListMap.find("firstBox");
-    //if (iter != m_basicListMap.end()) {
-    //    auto model = iter->second;
+    iter = m_basicListMap.find("firstBox");
+    if (iter != m_basicListMap.end()) {
+        auto model = iter->second;
 
-    //    Vector3 n(0.f, 1.f, 0.f);
-    //    Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
+        Vector3 n(0.f, 1.f, 0.f);
+        Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
 
-    //    model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
-    //                          model->m_worldRow);
-    //}
+        model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
+                              model->m_worldRow);
+    }
 
-    //iter = m_basicListMap.find("MainSphere");
-    //if (iter != m_basicListMap.end()) {
-    //    auto model = iter->second;
+    iter = m_basicListMap.find("MainSphere");
+    if (iter != m_basicListMap.end()) {
+        auto model = iter->second;
 
-    //    Vector3 n(0.f, 1.f, 0.f);
-    //    Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
+        Vector3 n(0.f, 1.f, 0.f);
+        Quaternion q = Quaternion::CreateFromAxisAngle(n, dt);
 
-    //    model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
-    //                          model->m_worldRow);
-    //}
+        model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
+                              model->m_worldRow);
+    }
+
+
 
     // if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
     //     D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
