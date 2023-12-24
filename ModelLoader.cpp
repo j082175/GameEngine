@@ -355,20 +355,25 @@ MeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
 
-        vertex.normalModel.x = mesh->mNormals[i].x;
-        if (m_isGLTF) {
-            vertex.normalModel.y = mesh->mNormals[i].z;
-            vertex.normalModel.z = -mesh->mNormals[i].y;
+        if (mesh->mNormals == NULL) {
+            std::cout << "There is no normal!!!" << '\n';
+            break;
         } else {
-            vertex.normalModel.y = mesh->mNormals[i].y;
-            vertex.normalModel.z = mesh->mNormals[i].z;
-        }
+            vertex.normalModel.x = mesh->mNormals[i].x;
 
-        if (m_revertNormals) {
-            vertex.normalModel *= -1.0f;
-        }
+            if (m_isGLTF) {
+                vertex.normalModel.y = mesh->mNormals[i].z;
+                vertex.normalModel.z = -mesh->mNormals[i].y;
+            } else {
+                vertex.normalModel.y = mesh->mNormals[i].y;
+                vertex.normalModel.z = mesh->mNormals[i].z;
+            }
+            if (m_revertNormals) {
+                vertex.normalModel *= -1.0f;
+            }
 
-        vertex.normalModel.Normalize();
+            vertex.normalModel.Normalize();
+        }
 
         if (mesh->mTextureCoords[0]) {
             vertex.texcoord.x = (float)mesh->mTextureCoords[0][i].x;

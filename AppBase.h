@@ -184,8 +184,8 @@ class AppBase {
     shared_ptr<Model> m_pickedModel;
     shared_ptr<Model> m_lightSphere[MAX_LIGHTS];
     shared_ptr<Model> m_cursorSphere;
-    shared_ptr<Model> m_mirror; // 거울은 별도로 그림
-    shared_ptr<Model> m_mirror2;
+    //shared_ptr<Model> m_mirror; // 거울은 별도로 그림
+    //shared_ptr<Model> m_mirror2;
     DirectX::SimpleMath::Plane m_mirrorPlane;
     DirectX::SimpleMath::Plane m_mirrorPlane2;
     float m_mirrorAlpha = 1.0f; // Opacity
@@ -201,7 +201,7 @@ class AppBase {
 
     std::map<std::string, std::shared_ptr<Model>> m_basicListMap;
 
-    int m_skyboxCheck = 0;
+    int m_skyboxCheck = 1;
 
     std::shared_ptr<Model> m_coordinate;
 

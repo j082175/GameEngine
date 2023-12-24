@@ -20,7 +20,6 @@ Party::Party() : AppBase() {}
 
 bool Party::InitScene() {
 
-
     AppBase::m_globalConstsCPU.strengthIBL = 1.0f;
 
     AppBase::m_camera.Reset(Vector3(3.74966f, 5.03645f, -2.54918f), -0.819048f,
@@ -58,7 +57,7 @@ bool Party::InitScene() {
         m_globalConstsCPU.lights[2].spotPower = 5.f;
         m_globalConstsCPU.lights[2].lightColor = Vector3(0.f, 0.f, 1.f);
         m_globalConstsCPU.lights[2].type = LIGHT_SPOT | LIGHT_SHADOW;
-        //m_globalConstsCPU.lights[2].type = LIGHT_OFF;
+        // m_globalConstsCPU.lights[2].type = LIGHT_OFF;
     }
 
     // 바닥(거울)
@@ -92,7 +91,7 @@ bool Party::InitScene() {
 
         m_mirrorList.insert(std::make_pair(m_ground, mirrorPlane));
 
-        m_mirror = m_ground;
+        // m_mirror = m_ground;
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -153,7 +152,7 @@ bool Party::InitScene() {
 
     // Mixamo Dance
     {
-        //string path = "../Assets/Characters/Mixamo/";
+        // string path = "../Assets/Characters/Mixamo/";
         string path = basePath + "Characters/Mixamo/";
 
         vector<string> clipNames = {"Hip Hop Dancing.fbx"};
@@ -202,7 +201,7 @@ bool Party::InitScene() {
 
     // Amy
     {
-        //string path = "../Assets/Characters/Amy/";
+        // string path = "../Assets/Characters/Amy/";
         string path = basePath + "Characters/Amy/";
 
         vector<string> clipNames = {"Silly Dancing.fbx"};
@@ -251,7 +250,7 @@ bool Party::InitScene() {
 
     // Arissa
     {
-        //string path = "../Assets/Characters/Arissa/";
+        // string path = "../Assets/Characters/Arissa/";
         string path = basePath + "Characters/Arissa/";
 
         vector<string> clipNames = {"Bboy Hip Hop Move.fbx"};
@@ -300,7 +299,7 @@ bool Party::InitScene() {
 
     // Kachujin
     {
-        //string path = "../Assets/Characters/Kachujin/";
+        // string path = "../Assets/Characters/Kachujin/";
         string path = basePath + "Characters/kachujin/";
 
         vector<string> clipNames = {"Rumba Dancing.fbx"};
@@ -349,7 +348,7 @@ bool Party::InitScene() {
 
     // Boss
     {
-        //string path = "../Assets/Characters/Boss/";
+        // string path = "../Assets/Characters/Boss/";
         string path = basePath + "Characters/Boss/";
 
         vector<string> clipNames = {"Swing Dancing.fbx"};
@@ -398,7 +397,7 @@ bool Party::InitScene() {
 
     // Maria
     {
-        //string path = "../Assets/Characters/Maria/";
+        // string path = "../Assets/Characters/Maria/";
         string path = basePath + "Characters/Maria/";
 
         vector<string> clipNames = {"Hip Hop Dancing.fbx"};
@@ -447,7 +446,7 @@ bool Party::InitScene() {
 
     // Erika
     {
-        //string path = "../Assets/Characters/Erika/";
+        // string path = "../Assets/Characters/Erika/";
         string path = basePath + "Characters/Erika/";
 
         vector<string> clipNames = {"Samba Dancing.fbx"};
@@ -532,7 +531,8 @@ bool Party::InitScene() {
     //        m_characterArr.back()->m_materialConsts.GetCpu().metallicFactor =
     //            0.0f;
     //        m_characterArr.back()->UpdateWorldRow(
-    //            Matrix::CreateScale(1.0f) * Matrix::CreateTranslation(center));
+    //            Matrix::CreateScale(1.0f) *
+    //            Matrix::CreateTranslation(center));
 
     //        m_basicList.push_back(m_characterArr.back()); // 리스트에 등록
     //        m_basicListMap.insert(
@@ -544,7 +544,7 @@ bool Party::InitScene() {
     // Club Atomic: Where the holograms go.
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
-        //string basePath =
+        // string basePath =
         //    "../Assets/3DModel/club_atomic_where_the_holograms_go/";
         string path = basePath + "3DModel/club_atomic_where_the_holograms_go/";
 
@@ -580,7 +580,7 @@ bool Party::InitScene() {
     // beautiful-sphere
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
-        //string basePath = "../Assets/Models/beautiful-sphere/";
+        // string basePath = "../Assets/Models/beautiful-sphere/";
         string path = basePath + "Models/beautiful-sphere/";
 
         auto mesh = GeometryGenerator::ReadFromFile(path, "sphere.fbx");
@@ -672,7 +672,6 @@ bool Party::InitScene() {
 
     //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     //}
-
 
     return true;
 }
@@ -788,12 +787,12 @@ void Party::Update(float dt) {
                              isRun[i]);
     }
 
-	auto m = m_basicListMap.find("BeautifulSphere");
+    auto m = m_basicListMap.find("BeautifulSphere");
 
-	if (m != m_basicListMap.end()) {
+    if (m != m_basicListMap.end()) {
         m->second->UpdateWorldRow(Matrix::CreateRotationY(dt) *
                                   m->second->m_worldRow);
-	}
+    }
 }
 
 void Party::Render() {
@@ -913,9 +912,9 @@ void Party::UpdateAnimationDance(
     const std::shared_ptr<SkinnedMeshModel> &character, float dt,
     float &frameCount, int &state, bool &isRun) {
 
-     //std::cout << state << '\n';
-     //std::cout << frameCount << '\n';
-     //std::cout << dt << '\n';
+    // std::cout << state << '\n';
+    // std::cout << frameCount << '\n';
+    // std::cout << dt << '\n';
 
     if (state == 0) { // 정지 상태
         // TODO:
@@ -1013,24 +1012,32 @@ void Party::UpdateGUI() {
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
-    if (ImGui::TreeNode("Mirror")) {
 
-        ImGui::SliderFloat("Alpha", &m_mirrorAlpha, 0.0f, 1.0f);
-        const float blendColor[4] = {m_mirrorAlpha, m_mirrorAlpha,
-                                     m_mirrorAlpha, 1.0f};
-        if (m_drawAsWire)
-            Graphics::mirrorBlendWirePSO.SetBlendFactor(blendColor);
-        else
-            Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
+    if (m_mirrorList.size() != 0) {
 
-        ImGui::SliderFloat("Metallic",
-                           &m_mirror->m_materialConsts.GetCpu().metallicFactor,
-                           0.0f, 1.0f);
-        ImGui::SliderFloat("Roughness",
-                           &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
-                           0.0f, 1.0f);
+        const auto &mirrorBegin = m_mirrorList.begin();
 
-        ImGui::TreePop();
+        if (ImGui::TreeNode("Mirror")) {
+
+            ImGui::SliderFloat("Alpha", &m_mirrorAlpha, 0.0f, 1.0f);
+            const float blendColor[4] = {m_mirrorAlpha, m_mirrorAlpha,
+                                         m_mirrorAlpha, 1.0f};
+            if (m_drawAsWire)
+                Graphics::mirrorBlendWirePSO.SetBlendFactor(blendColor);
+            else
+                Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
+
+            ImGui::SliderFloat(
+                "Metallic",
+                &mirrorBegin->first->m_materialConsts.GetCpu().metallicFactor,
+                0.0f, 1.0f);
+            ImGui::SliderFloat(
+                "Roughness",
+                &mirrorBegin->first->m_materialConsts.GetCpu().roughnessFactor,
+                0.0f, 1.0f);
+
+            ImGui::TreePop();
+        }
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);

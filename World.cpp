@@ -59,18 +59,20 @@ bool World::InitScene() {
         m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
         m_ground->m_name = "Ground";
 
-        Vector3 position = Vector3(0.0f, -0.5f - 10.f, 2.0f);
-        m_ground->UpdateWorldRow(Matrix::CreateRotationX(3.141592f * 0.5f) *
+        Vector3 position = Vector3(0.0f, -0.5f, 2.0f);
+        m_ground->UpdateWorldRow(Matrix::CreateScale(10.f) *
+                                 Matrix::CreateRotationX(3.141592f * 0.5f) *
                                  Matrix::CreateTranslation(position));
 
         // m_mirrorPlane = SimpleMath::Plane(position, Vector3(0.0f, 1.0f,
-        // 0.0f)); m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
+        // 0.0f));
+        // m_mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
         std::shared_ptr<Plane> mirrorPlane =
             std::make_shared<Plane>(position, Vector3(0.0f, -1.0f, 0.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-        m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+        //m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -385,10 +387,10 @@ bool World::InitScene() {
 
         m_ground =
             make_shared<Model>(m_device, m_context, vector{terrainMeshes});
-         //m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-         m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
-         //m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-         //m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+        // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+        m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
+        // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+        // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
         Vector3 position = Vector3(0.0f, 0.f, 0.0f);
         m_ground->UpdateWorldRow(
@@ -398,7 +400,7 @@ bool World::InitScene() {
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = true;
 
-        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
 
         // Tree0
 
@@ -444,17 +446,17 @@ bool World::InitScene() {
         std::uniform_real_distribution<float> dist(
             0, terrainMeshes[0].vertices.size());
 
-        for (size_t i = 0; i < 1; i++) {
+        for (size_t i = 0; i < 10; i++) {
             Vector3 center = Vector3(
                 terrainMeshes[0].vertices[(int)round(dist(gen))].position);
             // Vector3 center = Vector3(terrainMeshes[0].vertices[0].position);
 
             center = Vector3::Transform(center, m_ground->m_worldRow);
-            center += 1.f * Vector3(0.f, 0.5f, 0.f);
+            center += 10.f * Vector3(0.f, 0.5f, 0.f);
 
             ModelInstance mi;
             mi.instanceWorld =
-                (Matrix::CreateScale(1.f) * Matrix::CreateTranslation(center))
+                (Matrix::CreateScale(10.f) * Matrix::CreateTranslation(center))
                     .Transpose();
 
             m_tree.m_leaves->m_instancesCpu.push_back(mi);
@@ -496,14 +498,14 @@ bool World::InitScene() {
         MeshData mesh = GeometryGenerator::MakeSphere(0.1f, 20, 20);
         string basePath = "..\\Assets\\Textures\\";
         mesh.albedoTextureFilename = basePath + "blender_uv_grid_2k.png";
-        //Vector3 center(-5.0f, 5.f, 5.f);
+        // Vector3 center(-5.0f, 5.f, 5.f);
         Vector3 center(0.f, 5.f, 0.f);
         auto newModel = make_shared<Model>(m_device, m_context, vector{mesh});
         newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
-        //newModel->m_materialConsts.GetCpu().albedoFactor =
-        //    Vector3(1.0f, 1.f, 1.f);
-        //newModel->m_materialConsts.GetCpu().roughnessFactor = 0.f;
-        //newModel->m_materialConsts.GetCpu().metallicFactor = 0.f;
+        // newModel->m_materialConsts.GetCpu().albedoFactor =
+        //     Vector3(1.0f, 1.f, 1.f);
+        // newModel->m_materialConsts.GetCpu().roughnessFactor = 0.f;
+        // newModel->m_materialConsts.GetCpu().metallicFactor = 0.f;
         newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.3f);
         newModel->UpdateConstantBuffers(m_device, m_context);
         newModel->m_isPickable = true; // 마우스로 선택/이동 가능
@@ -514,18 +516,85 @@ bool World::InitScene() {
         // Directional Light
         m_globalConstsCPU.lights[0].radiance = Vector3(5.0f);
         m_globalConstsCPU.lights[0].position = center;
-        //m_globalConstsCPU.lights[0].direction =
-        //    Vector3(0.f, 0.f, 0.f) - m_globalConstsCPU.lights[0].position;
-        //m_globalConstsCPU.lights[0].direction.Normalize();
+        // m_globalConstsCPU.lights[0].direction =
+        //     Vector3(0.f, 0.f, 0.f) - m_globalConstsCPU.lights[0].position;
+        // m_globalConstsCPU.lights[0].direction.Normalize();
         m_globalConstsCPU.lights[0].direction = Vector3(0.f, -1.f, 0.f);
 
         m_globalConstsCPU.lights[0].spotPower = 3.0f;
         m_globalConstsCPU.lights[0].radius = 0.04f;
         m_globalConstsCPU.lights[0].type =
             LIGHT_SPOT | LIGHT_SHADOW; // Point with shadow
-        //m_globalConstsCPU.lights[0].fallOffEnd = 200.f;
-        // m_globalConstsCPU.lights[0].type = LIGHT_OFF;
+        // m_globalConstsCPU.lights[0].fallOffEnd = 200.f;
+        //  m_globalConstsCPU.lights[0].type = LIGHT_OFF;
     }
+
+    // gamemap
+    //{
+    //    // https://freepbr.com/materials/stringy-marble-pbr/
+
+    //    string path = basePath + "3DModel\\uwk4cv8tmzgg-Nimbasa-City\\FBX\\";
+
+    //    auto mesh = GeometryGenerator::ReadFromFile(path, "Nimbasa City.fbx");
+    //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
+    //    // mesh.emissiveTextureFilename = "";
+    //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
+    //    // mesh.metallicTextureFilename = path +
+    //    //"stringy_marble_Metallic.png";
+    //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
+    //    // mesh.roughnessTextureFilename = path +
+    //    // "stringy_marble_Roughness.png";
+
+    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+
+    //    Vector3 position = Vector3(0.f, 10.f, 0.f);
+    //    m_ground->UpdateWorldRow(
+    //        Matrix::CreateScale(
+    //            200.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+    //        Matrix::CreateTranslation(position));
+    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+    //    m_ground->m_isPickable = true;
+
+    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    //}
+
+    // model
+    //{
+    //    // https://freepbr.com/materials/stringy-marble-pbr/
+
+    //    string path = basePath + "3DModel\\death-valley-terrain\\";
+
+    //    auto mesh = GeometryGenerator::ReadFromFile(path, "DeathValley Mesh Output.obj");
+    //    mesh[0].albedoTextureFilename =
+    //        path + "DeathValley_Bitmap_Output_8192_JPG.jpg";
+    //    // mesh.emissiveTextureFilename = "";
+    //    mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
+    //    // mesh.metallicTextureFilename = path +
+    //    //"stringy_marble_Metallic.png";
+    //    mesh[0].normalTextureFilename = path + "NewBump_1_4097.jpg";
+    //    // mesh.roughnessTextureFilename = path +
+    //    // "stringy_marble_Roughness.png";
+
+    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+
+    //    Vector3 position = Vector3(0.f, 5.f, 0.f);
+    //    m_ground->UpdateWorldRow(
+    //        Matrix::CreateScale(
+    //            1.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+    //        Matrix::CreateTranslation(position));
+    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+    //    m_ground->m_isPickable = true;
+
+    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    //}
 
     ComPtr<ID3D11Texture2D> backBuffer;
     m_swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
@@ -584,8 +653,6 @@ void World::Update(float dt) {
         model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
                               model->m_worldRow);
     }
-
-
 
     // if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
     //     D3D11Utils::UpdateBuffer(m_context, m_tree.m_leaves->m_instancesCpu,
@@ -686,24 +753,32 @@ void World::UpdateGUI() {
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
-    if (ImGui::TreeNode("Mirror")) {
 
-        ImGui::SliderFloat("Alpha", &m_mirrorAlpha, 0.0f, 1.0f);
-        const float blendColor[4] = {m_mirrorAlpha, m_mirrorAlpha,
-                                     m_mirrorAlpha, 1.0f};
-        if (m_drawAsWire)
-            Graphics::mirrorBlendWirePSO.SetBlendFactor(blendColor);
-        else
-            Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
+    if (m_mirrorList.size() != 0) {
 
-        // ImGui::SliderFloat("Metallic",
-        //                    &m_mirror->m_materialConsts.GetCpu().metallicFactor,
-        //                    0.0f, 1.0f);
-        // ImGui::SliderFloat("Roughness",
-        //                    &m_mirror->m_materialConsts.GetCpu().roughnessFactor,
-        //                    0.0f, 1.0f);
+        const auto &mirrorBegin = m_mirrorList.begin();
 
-        ImGui::TreePop();
+        if (ImGui::TreeNode("Mirror")) {
+
+            ImGui::SliderFloat("Alpha", &m_mirrorAlpha, 0.0f, 1.0f);
+            const float blendColor[4] = {m_mirrorAlpha, m_mirrorAlpha,
+                                         m_mirrorAlpha, 1.0f};
+            if (m_drawAsWire)
+                Graphics::mirrorBlendWirePSO.SetBlendFactor(blendColor);
+            else
+                Graphics::mirrorBlendSolidPSO.SetBlendFactor(blendColor);
+
+            ImGui::SliderFloat(
+                "Metallic",
+                &mirrorBegin->first->m_materialConsts.GetCpu().metallicFactor,
+                0.0f, 1.0f);
+            ImGui::SliderFloat(
+                "Roughness",
+                &mirrorBegin->first->m_materialConsts.GetCpu().roughnessFactor,
+                0.0f, 1.0f);
+
+            ImGui::TreePop();
+        }
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
