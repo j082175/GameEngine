@@ -167,7 +167,7 @@ void ModelLoader::Load(std::string basePath, std::string filename,
         if (pScene->HasAnimations())
             ReadAnimation(pScene);
 
-        // UpdateNormals(this->meshes); // Vertex Normal을 직접 계산 (참고용)
+        UpdateNormals(this->m_meshes); // Vertex Normal을 직접 계산 (참고용)
 
         UpdateTangents();
     } else {
@@ -356,8 +356,9 @@ MeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.position.z = mesh->mVertices[i].z;
 
         if (mesh->mNormals == NULL) {
-            std::cout << "There is no normal!!!" << '\n';
-            break;
+            //std::cout << "There is no normal!!!" << '\n';
+            UpdateNormals(this->m_meshes);
+            //break;
         } else {
             vertex.normalModel.x = mesh->mNormals[i].x;
 

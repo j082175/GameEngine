@@ -400,7 +400,7 @@ bool World::InitScene() {
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = true;
 
-         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+         //m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
 
         // Tree0
 
@@ -563,38 +563,39 @@ bool World::InitScene() {
     //}
 
     // model
-    //{
-    //    // https://freepbr.com/materials/stringy-marble-pbr/
+    {
+        // https://freepbr.com/materials/stringy-marble-pbr/
 
-    //    string path = basePath + "3DModel\\death-valley-terrain\\";
+        string path = basePath + "3DModel\\free-dry-rock-sand-terrain\\";
 
-    //    auto mesh = GeometryGenerator::ReadFromFile(path, "DeathValley Mesh Output.obj");
-    //    mesh[0].albedoTextureFilename =
-    //        path + "DeathValley_Bitmap_Output_8192_JPG.jpg";
-    //    // mesh.emissiveTextureFilename = "";
-    //    mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
-    //    // mesh.metallicTextureFilename = path +
-    //    //"stringy_marble_Metallic.png";
-    //    mesh[0].normalTextureFilename = path + "NewBump_1_4097.jpg";
-    //    // mesh.roughnessTextureFilename = path +
-    //    // "stringy_marble_Roughness.png";
+        auto mesh = GeometryGenerator::ReadFromFile(path, "heightmap-lowres.obj");
 
-    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
-    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+        mesh[0].albedoTextureFilename =
+            path + "colormap-lowres.png";
+        // mesh.emissiveTextureFilename = "";
+        //mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
+        // mesh.metallicTextureFilename = path +
+        //"stringy_marble_Metallic.png";
+        mesh[0].normalTextureFilename = path + "normalmap-lowres.png";
+        // mesh.roughnessTextureFilename = path +
+        // "stringy_marble_Roughness.png";
 
-    //    Vector3 position = Vector3(0.f, 5.f, 0.f);
-    //    m_ground->UpdateWorldRow(
-    //        Matrix::CreateScale(
-    //            1.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
-    //        Matrix::CreateTranslation(position));
-    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-    //    m_ground->m_isPickable = true;
+        m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+        // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+        // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+        // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+        // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
-    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
-    //}
+        Vector3 position = Vector3(0.f, 0.f, 0.f);
+        m_ground->UpdateWorldRow(
+            Matrix::CreateScale(
+                100.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+            Matrix::CreateTranslation(position));
+        m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+        m_ground->m_isPickable = true;
+
+        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    }
 
     ComPtr<ID3D11Texture2D> backBuffer;
     m_swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
