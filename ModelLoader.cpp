@@ -53,6 +53,49 @@ void UpdateNormals(vector<MeshData> &meshes) {
             }
         }
     }
+
+    std::map<Vector3, vector<Vector3>> map1;
+
+    for (auto &m : meshes) {
+
+        for (size_t i = 0; i < m.vertices.size(); i++) {
+
+            //////////
+            if (map1.find(m.vertices[i].position) != map1.end()) {
+                // std::cout << "found!" << '\n';
+                map1.find(m.vertices[i].position)
+                    ->second.push_back(m.vertices[i].normalModel);
+            } else {
+                std::vector<Vector3> vec;
+                vec.push_back(m.vertices[i].normalModel);
+                map1.insert(std::make_pair(m.vertices[i].position, vec));
+            }
+        }
+    }
+
+    // normal 평균내기
+    for (auto &iter : map1) {
+
+        Vector3 normalAvg(0.f);
+        for (size_t i = 0; i < iter.second.size(); i++) {
+            normalAvg += iter.second[i];
+        }
+
+        normalAvg /= iter.second.size();
+
+        for (size_t i = 0; i < iter.second.size(); i++) {
+            Vector3 ver = iter.second[i];
+            ver = normalAvg;
+            iter.second[i] = ver;
+        }
+    }
+
+    for (auto &m : meshes) {
+        for (size_t i = 0; i < m.vertices.size(); i++) {
+            m.vertices[i].normalModel =
+                map1.find(m.vertices[i].position)->second[0];
+        }
+    }
 }
 
 string GetExtension(const string filename) {
@@ -167,7 +210,7 @@ void ModelLoader::Load(std::string basePath, std::string filename,
         if (pScene->HasAnimations())
             ReadAnimation(pScene);
 
-        UpdateNormals(this->m_meshes); // Vertex Normal을 직접 계산 (참고용)
+        //UpdateNormals(this->m_meshes); // Vertex Normal을 직접 계산 (참고용)
 
         UpdateTangents();
     } else {
@@ -219,6 +262,11 @@ void ModelLoader::UpdateTangents() {
             normals[i] = v.normalModel;
             texcoords[i] = v.texcoord;
         }
+
+        // ComputeNormals(m.indices.data(), m.indices.size() / 3,
+        // positions.data(),
+        //                     m.vertices.size(), CNORM_DEFAULT,
+        //                     normals.data());
 
         ComputeTangentFrame(m.indices.data(), m.indices.size() / 3,
                             positions.data(), normals.data(), texcoords.data(),
@@ -347,6 +395,13 @@ MeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
     auto &indices = newMesh.indices;
     auto &skinnedVertices = newMesh.skinnedVertices;
 
+    int count = -1;
+    Vector3 v0;
+    Vector3 v1;
+    Vector3 v2;
+    size_t numVertices = mesh->mNumVertices;
+    // size_t numVertices = 6;
+
     // Walk through each of the mesh's vertices
     for (UINT i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -356,9 +411,38 @@ MeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.position.z = mesh->mVertices[i].z;
 
         if (mesh->mNormals == NULL) {
-            //std::cout << "There is no normal!!!" << '\n';
-            UpdateNormals(this->m_meshes);
-            //break;
+            //++count;
+
+            // if (count % 3 == 0 && i + 2 < numVertices) {
+
+            //    v0 = Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y,
+            //                 mesh->mVertices[i].z);
+            //    v1 = Vector3(mesh->mVertices[i + 1].x, mesh->mVertices[i +
+            //    1].y,
+            //                 mesh->mVertices[i + 1].z);
+            //    v2 = Vector3(mesh->mVertices[i + 2].x, mesh->mVertices[i +
+            //    2].y,
+            //                 mesh->mVertices[i + 2].z);
+            //}
+
+            // Vector3 cross1 = v1 - v0;
+            // Vector3 cross2 = v2 - v0;
+            // Vector3 faceNormal = cross2.Cross(cross1);
+
+            // vertex.normalModel.x = faceNormal.x;
+            // if (m_isGLTF) {
+            //     vertex.normalModel.y = faceNormal.y;
+            //     vertex.normalModel.z = -faceNormal.z;
+
+            //} else {
+            //    vertex.normalModel.y = faceNormal.y;
+            //    vertex.normalModel.z = faceNormal.z;
+            //}
+
+            vertex.normalModel.x = 0.f;
+            vertex.normalModel.y = 0.f;
+            vertex.normalModel.z = 0.f;
+
         } else {
             vertex.normalModel.x = mesh->mNormals[i].x;
 

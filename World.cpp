@@ -371,7 +371,7 @@ bool World::InitScene() {
 
         auto terrainMeshes =
             GeometryGenerator::ReadFromFile(path, "Terrainwinter1.fbx");
-
+		
         terrainMeshes[0].albedoTextureFilename =
             path + "Default OBJ_Base_Color.png";
         // mesh.emissiveTextureFilename = "";
@@ -388,7 +388,7 @@ bool World::InitScene() {
         m_ground =
             make_shared<Model>(m_device, m_context, vector{terrainMeshes});
         // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-        m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
+        //m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
         // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
         // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
@@ -530,53 +530,18 @@ bool World::InitScene() {
     }
 
     // gamemap
-    //{
-    //    // https://freepbr.com/materials/stringy-marble-pbr/
-
-    //    string path = basePath + "3DModel\\uwk4cv8tmzgg-Nimbasa-City\\FBX\\";
-
-    //    auto mesh = GeometryGenerator::ReadFromFile(path, "Nimbasa City.fbx");
-    //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
-    //    // mesh.emissiveTextureFilename = "";
-    //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
-    //    // mesh.metallicTextureFilename = path +
-    //    //"stringy_marble_Metallic.png";
-    //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
-    //    // mesh.roughnessTextureFilename = path +
-    //    // "stringy_marble_Roughness.png";
-
-    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
-    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
-
-    //    Vector3 position = Vector3(0.f, 10.f, 0.f);
-    //    m_ground->UpdateWorldRow(
-    //        Matrix::CreateScale(
-    //            200.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
-    //        Matrix::CreateTranslation(position));
-    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-    //    m_ground->m_isPickable = true;
-
-    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
-    //}
-
-    // model
     {
         // https://freepbr.com/materials/stringy-marble-pbr/
 
-        string path = basePath + "3DModel\\free-dry-rock-sand-terrain\\";
+        string path = basePath + "3DModel\\uwk4cv8tmzgg-Nimbasa-City\\FBX\\";
 
-        auto mesh = GeometryGenerator::ReadFromFile(path, "heightmap-lowres.obj");
-
-        mesh[0].albedoTextureFilename =
-            path + "colormap-lowres.png";
+        auto mesh = GeometryGenerator::ReadFromFile(path, "Nimbasa City.fbx");
+        // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
         // mesh.emissiveTextureFilename = "";
-        //mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
+        // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
         // mesh.metallicTextureFilename = path +
         //"stringy_marble_Metallic.png";
-        mesh[0].normalTextureFilename = path + "normalmap-lowres.png";
+        // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
         // mesh.roughnessTextureFilename = path +
         // "stringy_marble_Roughness.png";
 
@@ -586,16 +551,51 @@ bool World::InitScene() {
         // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
         // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
-        Vector3 position = Vector3(0.f, 0.f, 0.f);
+        Vector3 position = Vector3(0.f, 10.f, 0.f);
         m_ground->UpdateWorldRow(
             Matrix::CreateScale(
-                100.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+                20.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
             Matrix::CreateTranslation(position));
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = true;
 
         m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
+
+    // model
+    //{
+    //    // https://freepbr.com/materials/stringy-marble-pbr/
+
+    //    string path = basePath + "3DModel\\free-dry-rock-sand-terrain\\";
+
+    //    auto mesh = GeometryGenerator::ReadFromFile(path, "heightmap-lowres.obj");
+
+    //    mesh[0].albedoTextureFilename =
+    //        path + "colormap-lowres.png";
+    //    // mesh.emissiveTextureFilename = "";
+    //    //mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
+    //    // mesh.metallicTextureFilename = path +
+    //    //"stringy_marble_Metallic.png";
+    //    mesh[0].normalTextureFilename = path + "normalmap-lowres.png";
+    //    // mesh.roughnessTextureFilename = path +
+    //    // "stringy_marble_Roughness.png";
+
+    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+
+    //    Vector3 position = Vector3(0.f, 0.f, 0.f);
+    //    m_ground->UpdateWorldRow(
+    //        Matrix::CreateScale(
+    //            100.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+    //        Matrix::CreateTranslation(position));
+    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+    //    m_ground->m_isPickable = true;
+
+    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    //}
 
     ComPtr<ID3D11Texture2D> backBuffer;
     m_swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
