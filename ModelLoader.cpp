@@ -210,7 +210,7 @@ void ModelLoader::Load(std::string basePath, std::string filename,
         if (pScene->HasAnimations())
             ReadAnimation(pScene);
 
-        //UpdateNormals(this->m_meshes); // Vertex Normal을 직접 계산 (참고용)
+        UpdateNormals(this->m_meshes); // Vertex Normal을 직접 계산 (참고용)
 
         UpdateTangents();
     } else {

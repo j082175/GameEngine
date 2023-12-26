@@ -72,7 +72,7 @@ bool World::InitScene() {
             std::make_shared<Plane>(position, Vector3(0.0f, -1.0f, 0.0f));
         std::shared_ptr<Model> mirror = m_ground; // 바닥에 거울처럼 반사 구현
 
-        //m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
+        // m_mirrorList.insert(std::make_pair(mirror, mirrorPlane));
 
         // m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
     }
@@ -367,11 +367,11 @@ bool World::InitScene() {
     {
         string path =
             basePath +
-            "\\Terrain\\Mountain\\3dexport_terrainwinter1_texture_1592143852\\";
+            "\\Terrain\\Mountain\\3dexport_terrainforest_texture_1592143852\\";
 
         auto terrainMeshes =
-            GeometryGenerator::ReadFromFile(path, "Terrainwinter1.fbx");
-		
+            GeometryGenerator::ReadFromFile(path, "Terrainforest.fbx");
+
         terrainMeshes[0].albedoTextureFilename =
             path + "Default OBJ_Base_Color.png";
         // mesh.emissiveTextureFilename = "";
@@ -388,7 +388,7 @@ bool World::InitScene() {
         m_ground =
             make_shared<Model>(m_device, m_context, vector{terrainMeshes});
         // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-        //m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
+        // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.1f);
         // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
         // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
@@ -400,7 +400,7 @@ bool World::InitScene() {
         m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
         m_ground->m_isPickable = true;
 
-         //m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
 
         // Tree0
 
@@ -530,37 +530,37 @@ bool World::InitScene() {
     }
 
     // gamemap
-    {
-        // https://freepbr.com/materials/stringy-marble-pbr/
+    //{
+    //    // https://freepbr.com/materials/stringy-marble-pbr/
 
-        string path = basePath + "3DModel\\uwk4cv8tmzgg-Nimbasa-City\\FBX\\";
+    //    string path = basePath + "3DModel\\uwk4cv8tmzgg-Nimbasa-City\\FBX\\";
 
-        auto mesh = GeometryGenerator::ReadFromFile(path, "Nimbasa City.fbx");
-        // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
-        // mesh.emissiveTextureFilename = "";
-        // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
-        // mesh.metallicTextureFilename = path +
-        //"stringy_marble_Metallic.png";
-        // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
-        // mesh.roughnessTextureFilename = path +
-        // "stringy_marble_Roughness.png";
+    //    auto mesh = GeometryGenerator::ReadFromFile(path, "Nimbasa City.fbx");
+    //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
+    //    // mesh.emissiveTextureFilename = "";
+    //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
+    //    // mesh.metallicTextureFilename = path +
+    //    //"stringy_marble_Metallic.png";
+    //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
+    //    // mesh.roughnessTextureFilename = path +
+    //    // "stringy_marble_Roughness.png";
 
-        m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
-        // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-        // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-        // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-        // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+    //    // m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+    //    // m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+    //    // m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+    //    // m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
 
-        Vector3 position = Vector3(0.f, 10.f, 0.f);
-        m_ground->UpdateWorldRow(
-            Matrix::CreateScale(
-                20.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
-            Matrix::CreateTranslation(position));
-        m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-        m_ground->m_isPickable = true;
+    //    Vector3 position = Vector3(0.f, 10.f, 0.f);
+    //    m_ground->UpdateWorldRow(
+    //        Matrix::CreateScale(
+    //            20.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+    //        Matrix::CreateTranslation(position));
+    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+    //    m_ground->m_isPickable = true;
 
-        m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
-    }
+    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+    //}
 
     // model
     //{
@@ -568,12 +568,14 @@ bool World::InitScene() {
 
     //    string path = basePath + "3DModel\\free-dry-rock-sand-terrain\\";
 
-    //    auto mesh = GeometryGenerator::ReadFromFile(path, "heightmap-lowres.obj");
+    //    auto mesh = GeometryGenerator::ReadFromFile(path,
+    //    "heightmap-lowres.obj");
 
     //    mesh[0].albedoTextureFilename =
     //        path + "colormap-lowres.png";
     //    // mesh.emissiveTextureFilename = "";
-    //    //mesh[0].aoTextureFilename = path + "internal_ground_ao_texture.jpeg";
+    //    //mesh[0].aoTextureFilename = path +
+    //    "internal_ground_ao_texture.jpeg";
     //    // mesh.metallicTextureFilename = path +
     //    //"stringy_marble_Metallic.png";
     //    mesh[0].normalTextureFilename = path + "normalmap-lowres.png";
@@ -653,6 +655,14 @@ void World::Update(float dt) {
 
         model->UpdateWorldRow(Matrix::CreateFromQuaternion(q) *
                               model->m_worldRow);
+    }
+
+    iter = m_basicListMap.find("Sun");
+    if (iter != m_basicListMap.end()) {
+        auto model = iter->second;
+
+        model->UpdateWorldRow(
+            Matrix::CreateTranslation(m_globalConstsCPU.lights[0].position));
     }
 
     // if (m_tree.m_leaves->m_instancesCpu.size() > 0) {
@@ -780,6 +790,23 @@ void World::UpdateGUI() {
 
             ImGui::TreePop();
         }
+    }
+
+    ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+    if (ImGui::TreeNode("Light0(Directional)")) {
+        ImGui::SliderFloat3("Position", &m_globalConstsCPU.lights[0].position.x,
+                            -20.0f, 50.0f);
+        ImGui::SliderFloat3("Direction", &m_globalConstsCPU.lights[0].direction.x,
+                            -1.0f, 1.0f);
+
+        ImGui::SliderFloat("Halo Radius",
+                           &m_globalConstsCPU.lights[0].haloRadius, 0.0f, 2.0f);
+        ImGui::SliderFloat("Halo Strength",
+                           &m_globalConstsCPU.lights[0].haloStrength, 0.0f,
+                           1.0f);
+        ImGui::SliderFloat("Radius", &m_globalConstsCPU.lights[0].radius, 0.0f,
+                           0.5f);
+        ImGui::TreePop();
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
