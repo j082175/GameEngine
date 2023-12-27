@@ -201,7 +201,7 @@ class AppBase {
 
     std::map<std::string, std::shared_ptr<Model>> m_basicListMap;
 
-    int m_skyboxCheck = 1;
+    int m_skyboxCheck = 0;
 
     std::shared_ptr<Model> m_coordinate;
 

@@ -493,59 +493,57 @@ bool Party::InitScene() {
         }
     }
 
-    // Eve
-    //{
-    //    string path = basePath + "Characters/Eve/";
-    //    vector<string> clipNames = {"Dancing Maraschino Step.fbx"};
+     //Eve
+    {
+        string path = basePath + "Characters/Eve/";
+        vector<string> clipNames = {"Dancing Maraschino Step.fbx"};
 
-    //    AnimationData aniData;
+        AnimationData aniData;
 
-    //    auto [meshes, _] =
-    //        GeometryGenerator::ReadAnimationFromFile(path, "character.fbx");
+        auto [meshes, _] =
+            GeometryGenerator::ReadAnimationFromFile(path, "character.fbx");
 
-    //    std::cout << meshes.size() << '\n';
+        std::cout << meshes.size() << '\n';
 
-    //    for (auto &name : clipNames) {
-    //        auto [_, ani] =
-    //            GeometryGenerator::ReadAnimationFromFile(path, name);
+        for (auto &name : clipNames) {
+            auto [_, ani] =
+                GeometryGenerator::ReadAnimationFromFile(path, name);
 
-    //        if (aniData.clips.empty()) {
-    //            aniData = ani;
-    //        } else {
-    //            aniData.clips.push_back(ani.clips.front());
-    //        }
-    //    }
+            if (aniData.clips.empty()) {
+                aniData = ani;
+            } else {
+                aniData.clips.push_back(ani.clips.front());
+            }
+        }
 
-    //    {
-    //        Vector3 center(2.0f, 0.5f, 3.0f);
-    //        // m_characterArr[0] =
-    //        //     make_shared<SkinnedMeshModel>(m_device, m_context, meshes,
-    //        //     aniData);
-    //        m_characterArr.push_back(make_shared<SkinnedMeshModel>(
-    //            m_device, m_context, meshes, aniData));
+        {
+            Vector3 center(2.0f, 0.5f, 3.0f);
+            // m_characterArr[0] =
+            //     make_shared<SkinnedMeshModel>(m_device, m_context, meshes,
+            //     aniData);
+            m_characterArr.push_back(make_shared<SkinnedMeshModel>(
+                m_device, m_context, meshes, aniData));
 
-    //        m_characterArr.back()->m_materialConsts.GetCpu().albedoFactor =
-    //            Vector3(1.0f);
-    //        m_characterArr.back()->m_materialConsts.GetCpu().roughnessFactor =
-    //            0.8f;
-    //        m_characterArr.back()->m_materialConsts.GetCpu().metallicFactor =
-    //            0.0f;
-    //        m_characterArr.back()->UpdateWorldRow(
-    //            Matrix::CreateScale(1.0f) *
-    //            Matrix::CreateTranslation(center));
+            m_characterArr.back()->m_materialConsts.GetCpu().albedoFactor =
+                Vector3(1.0f);
+            m_characterArr.back()->m_materialConsts.GetCpu().roughnessFactor =
+                0.8f;
+            m_characterArr.back()->m_materialConsts.GetCpu().metallicFactor =
+                0.0f;
+            m_characterArr.back()->UpdateWorldRow(
+                Matrix::CreateScale(1.0f) *
+                Matrix::CreateTranslation(center));
 
-    //        m_basicList.push_back(m_characterArr.back()); // 리스트에 등록
-    //        m_basicListMap.insert(
-    //            std::make_pair("Mixamo", m_characterArr.back()));
-    //        m_pickedModel = m_characterArr.back();
-    //    }
-    //}
+            m_basicList.push_back(m_characterArr.back()); // 리스트에 등록
+            m_basicListMap.insert(
+                std::make_pair("Mixamo", m_characterArr.back()));
+            m_pickedModel = m_characterArr.back();
+        }
+    }
 
     // Club Atomic: Where the holograms go.
     {
-        // https://freepbr.com/materials/stringy-marble-pbr/
-        // string basePath =
-        //    "../Assets/3DModel/club_atomic_where_the_holograms_go/";
+         https://freepbr.com/materials/stringy-marble-pbr/
         string path = basePath + "3DModel/club_atomic_where_the_holograms_go/";
 
         auto mesh = GeometryGenerator::ReadFromFile(path, "scene.gltf");
@@ -613,14 +611,14 @@ bool Party::InitScene() {
     //// Night Club
     //{
     //    // https://freepbr.com/materials/stringy-marble-pbr/
-    //    string basePath = "../Assets/3DModel/night-club/";
-    //    auto mesh = GeometryGenerator::ReadFromFile(basePath,
+    //    string path = basePath + "\\3DModel\\night-club\\";
+    //    auto mesh = GeometryGenerator::ReadFromFile(path,
     //    "Sketchfab_4.fbx");
     //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
     //    // mesh.emissiveTextureFilename = "";
     //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
     //    // mesh.metallicTextureFilename = path +
-    //    "stringy_marble_Metallic.png";
+    //    //"stringy_marble_Metallic.png";
     //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
     //    // mesh.roughnessTextureFilename = path +
     //    // "stringy_marble_Roughness.png";
@@ -642,36 +640,37 @@ bool Party::InitScene() {
     //}
 
     // 80s-warehouse
-    //{
-    //    // https://freepbr.com/materials/stringy-marble-pbr/
-    //    string basePath =
-    //        "../Assets/3DModel/warehouse/";
-    //    auto mesh = GeometryGenerator::ReadFromFile(basePath, "80sHub.fbx");
-    //    // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
-    //    // mesh.emissiveTextureFilename = "";
-    //    // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
-    //    // mesh.metallicTextureFilename = path +
-    //    "stringy_marble_Metallic.png";
-    //    // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
-    //    // mesh.roughnessTextureFilename = path +
-    //    // "stringy_marble_Roughness.png";
+  //  {
+  //      // https://freepbr.com/materials/stringy-marble-pbr/
 
-    //    m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
-    //    m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
-    //    m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
-    //    m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
-    //    m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+		//string path = basePath + "3DModel\\warehouse\\";
 
-    //    Vector3 position = Vector3(-1.0f, 1.1f, 4.0f);
-    //    m_ground->UpdateWorldRow(
-    //        Matrix::CreateScale(
-    //            10.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
-    //        Matrix::CreateTranslation(position));
-    //    m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
-    //    m_ground->m_isPickable = true;
+  //      auto mesh = GeometryGenerator::ReadFromFile(path, "80sHub.fbx");
+  //      // mesh.albedoTextureFilename = path + "stringy_marble_albedo.png";
+  //      // mesh.emissiveTextureFilename = "";
+  //      // mesh.aoTextureFilename = path + "stringy_marble_ao.png";
+  //      // mesh.metallicTextureFilename = path +
+  //      //"stringy_marble_Metallic.png";
+  //      // mesh.normalTextureFilename = path + "stringy_marble_Normal-dx.png";
+  //      // mesh.roughnessTextureFilename = path +
+  //      // "stringy_marble_Roughness.png";
 
-    //    m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
-    //}
+  //      m_ground = make_shared<Model>(m_device, m_context, vector{mesh});
+  //      m_ground->m_materialConsts.GetCpu().albedoFactor = Vector3(0.7f);
+  //      m_ground->m_materialConsts.GetCpu().emissionFactor = Vector3(0.0f);
+  //      m_ground->m_materialConsts.GetCpu().metallicFactor = 0.5f;
+  //      m_ground->m_materialConsts.GetCpu().roughnessFactor = 0.3f;
+
+  //      Vector3 position = Vector3(-1.0f, 1.1f, 4.0f);
+  //      m_ground->UpdateWorldRow(
+  //          Matrix::CreateScale(
+  //              20.f) * /*Matrix::CreateRotationX(3.141592f * 0.5f) **/
+  //          Matrix::CreateTranslation(position));
+  //      m_ground->m_castShadow = false; // 바닥은 그림자 만들기 생략
+  //      m_ground->m_isPickable = true;
+
+  //      m_basicList.push_back(m_ground); // 거울은 리스트에 등록 X
+  //  }
 
     return true;
 }

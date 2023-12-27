@@ -495,15 +495,16 @@ bool World::InitScene() {
 
     // Sun
     {
-        MeshData mesh = GeometryGenerator::MakeSphere(0.1f, 20, 20);
+        //MeshData mesh = GeometryGenerator::MakeSphere(1.f, 20, 20);
+        MeshData mesh = GeometryGenerator::MakeBox(1.f);
         string basePath = "..\\Assets\\Textures\\";
         mesh.albedoTextureFilename = basePath + "blender_uv_grid_2k.png";
         // Vector3 center(-5.0f, 5.f, 5.f);
-        Vector3 center(0.f, 5.f, 0.f);
+        Vector3 center(0.f, 2.f, 0.f);
         auto newModel = make_shared<Model>(m_device, m_context, vector{mesh});
         newModel->UpdateWorldRow(Matrix::CreateTranslation(center));
-        // newModel->m_materialConsts.GetCpu().albedoFactor =
-        //     Vector3(1.0f, 1.f, 1.f);
+        //newModel->m_materialConsts.GetCpu().albedoFactor =
+        //    Vector3(1.0f, 1.f, 0.f);
         // newModel->m_materialConsts.GetCpu().roughnessFactor = 0.f;
         // newModel->m_materialConsts.GetCpu().metallicFactor = 0.f;
         newModel->m_materialConsts.GetCpu().emissionFactor = Vector3(0.3f);
@@ -524,7 +525,7 @@ bool World::InitScene() {
         m_globalConstsCPU.lights[0].spotPower = 3.0f;
         m_globalConstsCPU.lights[0].radius = 0.04f;
         m_globalConstsCPU.lights[0].type =
-            LIGHT_SPOT | LIGHT_SHADOW; // Point with shadow
+            LIGHT_DIRECTIONAL | LIGHT_SHADOW; // Point with shadow
         // m_globalConstsCPU.lights[0].fallOffEnd = 200.f;
         //  m_globalConstsCPU.lights[0].type = LIGHT_OFF;
     }
@@ -796,8 +797,8 @@ void World::UpdateGUI() {
     if (ImGui::TreeNode("Light0(Directional)")) {
         ImGui::SliderFloat3("Position", &m_globalConstsCPU.lights[0].position.x,
                             -20.0f, 50.0f);
-        ImGui::SliderFloat3("Direction", &m_globalConstsCPU.lights[0].direction.x,
-                            -1.0f, 1.0f);
+        ImGui::SliderFloat3(
+            "Direction", &m_globalConstsCPU.lights[0].direction.x, -1.0f, 1.0f);
 
         ImGui::SliderFloat("Halo Radius",
                            &m_globalConstsCPU.lights[0].haloRadius, 0.0f, 2.0f);
@@ -806,6 +807,8 @@ void World::UpdateGUI() {
                            1.0f);
         ImGui::SliderFloat("Radius", &m_globalConstsCPU.lights[0].radius, 0.0f,
                            0.5f);
+        ImGui::SliderFloat("Radiance", &m_globalConstsCPU.lights[0].radiance.x, 0.0f,
+                           5.f);
         ImGui::TreePop();
     }
 

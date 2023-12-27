@@ -27,9 +27,9 @@ void UpdateNormals(vector<MeshData> &meshes) {
 
         for (int i = 0; i < m.indices.size(); i += 3) {
 
-            int idx0 = m.indices[i];
-            int idx1 = m.indices[i + 1];
-            int idx2 = m.indices[i + 2];
+            int idx0 = m.indices[i % m.indices.size()];
+            int idx1 = m.indices[(i + 1) % m.indices.size()];
+            int idx2 = m.indices[(i + 2) % m.indices.size()];
 
             auto v0 = m.vertices[idx0];
             auto v1 = m.vertices[idx1];
